@@ -1,0 +1,6 @@
+.venv/
+.idea/
+output/
+logs/
+config.yaml
+input.csv
