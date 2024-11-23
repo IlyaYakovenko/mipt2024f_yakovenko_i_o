@@ -13,8 +13,16 @@ fi
 NEW_FOLDER_NAME="$1"
 DESTINATION_PATH="all_outputs/$NEW_FOLDER_NAME"
 
+
 # Копирование папки output в all_outputs с новым именем
 mkdir -p all_outputs
-cp -r output "$DESTINATION_PATH"
-
-echo "Папка 'output' успешно скопирована в 'all_outputs' под именем '$NEW_FOLDER_NAME'."
+# Проверяем, существует ли папка с заданным именем в "all_outputs"
+if [ ! -d "$DESTINATION_PATH" ]; then
+  # Если папка не существует, копируем папку "output" и даём ей нужное имя
+  cp -r ./output "$DESTINATION_PATH"
+  echo "Папка 'output' скопирована в 'all_outputs/$NEW_FOLDER_NAME'."
+else
+  # Если папка существует, копируем содержимое "output" в существующую папку
+  cp -r ./output/* "$DESTINATION_PATH"
+  echo "Содержимое папки 'output' добавлено в 'all_outputs/$NEW_FOLDER_NAME'."
+fi

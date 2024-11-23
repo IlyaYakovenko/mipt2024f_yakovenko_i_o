@@ -1,0 +1,80 @@
+{
+  "_via_settings": {
+    "ui": {
+      "annotation_editor_height": 25,
+      "annotation_editor_fontsize": 0.8,
+      "leftsidebar_width": 18,
+      "image_grid": {
+        "img_height": 80,
+        "rshape_fill": "none",
+        "rshape_fill_opacity": 0.3,
+        "rshape_stroke": "yellow",
+        "rshape_stroke_width": 2,
+        "show_region_shape": true,
+        "show_image_policy": "all"
+      },
+      "image": {
+        "region_label": "__via_region_id__",
+        "region_color": "__via_default_region_color__",
+        "region_label_font": "10px Sans",
+        "on_image_annotation_editor_placement": "NEAR_REGION"
+      }
+    },
+    "core": {
+      "buffer_size": 18,
+      "filepath": {},
+      "default_filepath": ""
+    },
+    "project": {
+      "name": "VT9FK%-$NFD MJA6SG$_rotated.png"
+    }
+  },
+  "_via_img_metadata": {
+    "VT9FK%-$NFD MJA6SG$_rotated.png618": {
+      "filename": "VT9FK%-$NFD MJA6SG$_rotated.png",
+      "size": 618,
+      "regions": [
+        {
+          "shape_attributes": {
+            "name": "polyline",
+            "all_points_x": [
+              85.89145565725713,
+              627.9328418884719,
+              542.7039803060634,
+              0.6625940748485277,
+              85.89145565725713
+            ],
+            "all_points_y": [
+              511.5896556551626,
+              117.7735366192056,
+              0.4660724348382246,
+              394.2821914707952,
+              511.5896556551626
+            ]
+          },
+          "region_attributes": {
+            "type": "code39"
+          }
+        }
+      ],
+      "file_attributes": {}
+    }
+  },
+  "_via_attributes": {
+    "region": {
+      "type": {
+        "type": "dropdown",
+        "description": "Category of object",
+        "options": {
+          "code_39": "",
+          "code39": ""
+        }
+      }
+    },
+    "file": {}
+  },
+  "_via_data_format_version": "2.0.10",
+  "_via_image_id_list": [
+    "VT9FK%-$NFD MJA6SG$_rotated.png618"
+  ]
+}
