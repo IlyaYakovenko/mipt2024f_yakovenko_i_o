@@ -120,8 +120,8 @@ class Synthesizer:
         res = np.linalg.solve(A, B)
         return res.flatten()
 
-    def zoom(self):
-        sx, sy = 1.3, 1.3
+    def zoom(self, degree):
+        sx, sy = degree, degree
         scaling_matrix = (sx, 0, 0, 0, sy, 0)
         scaled = self.image.transform((int(self.image.width * sx), int(self.image.height * sy)), Image.AFFINE, scaling_matrix)
 

@@ -10,13 +10,14 @@ import string
 class Generator:
 
     class KnowledgeBase:
-
         def __init__(self):
-            self.barcode_types = {"39": ["code39", "code_39"], "8" : ["ean8", "ean_8"], "13": ["ean13", "ean_13"],
-                         "128": ["gs1-128", "ean_128"], "2of5": ["interleaved2of5", "interleaved_2_of_5"],
-                         "upca": ["upca", "upc_a"], "upce": ["upce", "upc_e"], "aztec": ["azteccode", "aztec_code"],
-                         "matrix": ["datamatrix", "data_matrix"], "maxi": ["maxicode", "maxi_code"],
-                         "417": ["pdf417", "pdf_417"], "qr": ["qrcode", "qr"]}
+            self.barcode_types = {"code39" : "code_39", "ean8" : "ean_8", "ean13" : "ean_13",
+                         "gs1-128" : "ean_128", "interleaved2of5" :"interleaved_2_of_5",
+                         "upca" : "upc_a", "upce" : "upc_e", "azteccode" : "aztec_code",
+                         "datamatrix" : "data_matrix", "maxicode" : "maxi_code",
+                         "pdf417" : "pdf_417", "qrcode" : "qr"}
+
+            self.options = {"1d" : "includetext guardwhitespace", "2d" : " "}
 
         def validate_barcode(self, barcode_type: str, data: str) -> bool:
             patterns = {
@@ -44,10 +45,7 @@ class Generator:
 
         def validate_gs1(self, data: str) -> bool:
             gs1_pattern = r'^\(\d{2}\)[\x00-\xFF]+$'
-            sums = 3 * sum(int(data[i]) for i in range(4, len(data), 2)) + sum(int(data[i]) for i in range(5, len(data), 2))
-            control_digit = 0 if sums % 10 == 0 else 10 - sums % 10
-            return True
-            return bool(re.match(gs1_pattern, data)) and str(data[-1]) == control_digit
+            return bool(re.match(gs1_pattern, data))
 
 
     def count_black_pixel_changes(self, image):
@@ -68,14 +66,11 @@ class Generator:
         return change_lines[1]
 
 
-    def parse_line(self, line):
-        match = re.match(r"\s*options:\s*([\w\s=,]*)\s*data:\s*\[([\d,\s]+)\]", line)
-        if match:
-            options = match.group(1)
-            data = match.group(2).split(", ")
-            return options, data
-        else:
-            return None, None
+    def get_options(self, barcode_type):
+        kb = self.KnowledgeBase()
+        if barcode_type in ["code39", "ean8", "ean13", "ean128", "interleaved2of5", "upca", "upce"]:
+            return kb.options["1d"]
+        return kb.options["2d"]
 
 
     def format_options(self, options_str):
