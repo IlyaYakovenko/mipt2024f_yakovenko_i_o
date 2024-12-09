@@ -1,3 +1,5 @@
+from numpy.core.defchararray import lower
+
 from generator import Generator
 from synthesizer import Synthesizer
 from frontend import main_window
@@ -48,8 +50,13 @@ def generate_images_and_annotations(barcode_type, number, data_type):
 
 def make_transformation(image, annotation, barcode_type, type_transform, params):
     snt = Synthesizer(image, annotation, barcode_type)
-    file_path_to_save = f"transformed_codes/{barcode_type}_{type_transform}/"
-    ann_path_to_save = f"transformed_codes/{barcode_type}_{type_transform}_annotation/"
+    if type_transform == "perspective":
+        name = lower(params["type"].replace(" ", "_"))
+        file_path_to_save = f"transformed_codes/{barcode_type}_{name}/"
+        ann_path_to_save = f"transformed_codes/{barcode_type}_{name}_annotation/"
+    else:
+        file_path_to_save = f"transformed_codes/{barcode_type}_{type_transform}/"
+        ann_path_to_save = f"transformed_codes/{barcode_type}_{type_transform}_annotation/"
     os.makedirs(file_path_to_save, exist_ok=True)
     os.makedirs(ann_path_to_save, exist_ok=True)
     width = snt.image.width
@@ -81,7 +88,7 @@ def make_transformation(image, annotation, barcode_type, type_transform, params)
     if type_transform == "noise":
         transformed_image, transformed_coords = snt.add_noise(int(params["intensity"]))
         new_name += "_noised.png"
-    if type_transform == "zoom":
+    if type_transform == "scale":
         transformed_image, transformed_coords = snt.zoom(int(params["degree"]))
         new_name += "_scaled.png"
     if type_transform == "blur":
@@ -89,9 +96,9 @@ def make_transformation(image, annotation, barcode_type, type_transform, params)
         new_name += "_blured.png"
     if type_transform == "texture":
         transformed_image, transformed_coords = snt.add_texture(params["texture_file"])
-        new_name = "_textured.png"
+        new_name += "_textured.png"
     if type_transform == "glare":
-        transformed_image, transformed_coords = snt.add_glare(int(params["intensity"]), int(params["radius"]), int(params["position"]))
+        transformed_image, transformed_coords = snt.add_glare(int(params["intensity"]), int(params["radius"]))
         new_name += "_with_glare.png"
     if type_transform == "brightness":
         transformed_image, transformed_coords = snt.adjust_brightness(int(params["degree"]))

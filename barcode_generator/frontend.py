@@ -61,7 +61,7 @@ def transform_existing_codes():
             "enabled": var_glare.get(),
             "intensity": entry_glare_intensity.get(),
             "radius": entry_glare_radius.get(),
-            "position": entry_glare_position.get(),
+            #"position": entry_glare_position.get(),
         }
         settings["texture"] = {"enabled": var_texture.get(), "texture_file" : texture_file_var.get()}
         save_settings(settings)
@@ -152,10 +152,10 @@ def transform_existing_codes():
     entry_glare_radius = tk.Entry(frame_transform, width=5)
     entry_glare_radius.grid(row=9, column=2, padx=5)
 
-    label_glare_position = tk.Label(frame_transform, text="Позиция:")
-    label_glare_position.grid(row=10, column=1, padx=5)
-    entry_glare_position = tk.Entry(frame_transform, width=5)
-    entry_glare_position.grid(row=10, column=2, padx=5)
+    # label_glare_position = tk.Label(frame_transform, text="Позиция:")
+    # label_glare_position.grid(row=10, column=1, padx=5)
+    # entry_glare_position = tk.Entry(frame_transform, width=5)
+    # entry_glare_position.grid(row=10, column=2, padx=5)
 
     check_texture = tk.Checkbutton(frame_transform, text="Текстура", variable=var_texture)
     check_texture.grid(row=11, column=0, sticky="w", padx=5, pady=5)

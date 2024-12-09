@@ -5,10 +5,17 @@ from PIL import Image, ImageFilter, ImageDraw, ImageEnhance
 import json
 import math
 
+from pygame.gfxdraw import pixel
+
+
+def find_line(x1, y1, x2, y2):
+    m = (y2 - y1) / (x2 - x1)
+    b = y1 - m * x1
+    return m, b
 
 class Synthesizer:
     def __init__(self, image_path, annotation_path, barcode_type):
-        self.image = Image.open(image_path)
+        self.image = Image.open(image_path).convert("RGBA")
         self.annotation = annotation_path
         self.image_path = image_path
         self.barcode_type = barcode_type
@@ -81,6 +88,22 @@ class Synthesizer:
             x_new = x_rot + x_c + shift_x
             y_new = y_rot + y_c + shift_y
             rotated_coords.append((x_new, y_new))
+
+        # m0, b0 = find_line(*rotated_coords[0], *rotated_coords[1])
+        # m1, b1 = find_line(*rotated_coords[1], *rotated_coords[2])
+        # m2, b2 = find_line(*rotated_coords[2], *rotated_coords[3])
+        # m3, b3 = find_line(*rotated_coords[3], *rotated_coords[0])
+        # for x in range(rotated_img.width):
+        #     for y in range(rotated_img.height):
+        #         line_0 = m0 * x + b0
+        #         line_1 = m1 * x + b1
+        #         line_2 = m2 * x + b2
+        #         line_3 = m3 * x + b3
+        #         if y > line_1:  # Если пиксель вне границы
+        #             coordinate = x, y
+        #             r, g, b, a = rotated_img.getpixel(coordinate)
+        #             if r == 0 and g == 0 and b == 0:  # Если пиксель черный
+        #                 rotated_img.putpixel((x, y), (255, 255, 255, 1))
 
         new_image_name = f"{os.path.splitext(os.path.basename(self.image_path))[0]}_rotated.png"
         output_filename = os.path.splitext(os.path.basename(self.annotation))[0] + "_rotated.json"
