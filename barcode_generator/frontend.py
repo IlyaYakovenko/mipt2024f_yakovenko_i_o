@@ -40,6 +40,10 @@ def transform_existing_codes():
     var_saturation = tk.BooleanVar()
     var_glare = tk.BooleanVar()
     var_texture = tk.BooleanVar()
+    var_overlay = tk.BooleanVar()
+    background_file = tk.StringVar()
+    overlay_x = tk.IntVar()
+    overlay_y = tk.IntVar()
 
     settings = {}
 
@@ -64,6 +68,11 @@ def transform_existing_codes():
             #"position": entry_glare_position.get(),
         }
         settings["texture"] = {"enabled": var_texture.get(), "texture_file" : texture_file_var.get()}
+        settings["overlay"] = {
+            "enabled": var_overlay.get(),
+            "background_file": background_file.get(),
+            "coordinates": {"x": overlay_x.get(), "y": overlay_y.get()}
+        }
         save_settings(settings)
         root.destroy()
 
@@ -118,7 +127,7 @@ def transform_existing_codes():
     check_brightness = tk.Checkbutton(frame_transform, text="Яркость", variable=var_brightness)
     check_brightness.grid(row=5, column=0, sticky="w", padx=5, pady=5)
 
-    label_brightness = tk.Label(frame_transform, text="Уровень яркости:")
+    label_brightness = tk.Label(frame_transform, text="Уровень яркости (> 0):")
     label_brightness.grid(row=5, column=1, padx=5)
     entry_brightness = tk.Entry(frame_transform, width=5)
     entry_brightness.grid(row=5, column=2, padx=5)
@@ -126,7 +135,7 @@ def transform_existing_codes():
     check_contrast = tk.Checkbutton(frame_transform, text="Контрастность", variable=var_contrast)
     check_contrast.grid(row=6, column=0, sticky="w", padx=5, pady=5)
 
-    label_contrast = tk.Label(frame_transform, text="Глубина контраста:")
+    label_contrast = tk.Label(frame_transform, text="Глубина контраста (> 0):")
     label_contrast.grid(row=6, column=1, padx=5)
     entry_contrast = tk.Entry(frame_transform, width=5)
     entry_contrast.grid(row=6, column=2, padx=5)
@@ -134,7 +143,7 @@ def transform_existing_codes():
     check_saturation = tk.Checkbutton(frame_transform, text="Насыщенность", variable=var_saturation)
     check_saturation.grid(row=7, column=0, sticky="w", padx=5, pady=5)
 
-    label_saturation = tk.Label(frame_transform, text="Интенсивность цветов:")
+    label_saturation = tk.Label(frame_transform, text="Интенсивность цветов (> 0):")
     label_saturation.grid(row=7, column=1, padx=5)
     entry_saturation = tk.Entry(frame_transform, width=5)
     entry_saturation.grid(row=7, column=2, padx=5)
@@ -162,6 +171,24 @@ def transform_existing_codes():
     texture_file_var = tk.StringVar()
     btn_select_texture = tk.Button(frame_transform, text="Выбрать текстуру", command=lambda: texture_file_var.set(choose_file()))
     btn_select_texture.grid(row=11, column=1, padx=5, pady=5)
+
+
+    check_overlay = tk.Checkbutton(frame_transform, text="Наложить на фон", variable=var_overlay)
+    check_overlay.grid(row=12, column=0, sticky="w", padx=5, pady=5)
+
+    btn_select_background = tk.Button(frame_transform, text="Выбрать фон",
+                                      command=lambda: background_file.set(choose_file()))
+    btn_select_background.grid(row=12, column=1, padx=5, pady=5)
+
+    label_overlay_x = tk.Label(frame_transform, text="Координата X:")
+    label_overlay_x.grid(row=12, column=2, padx=5, pady=5)
+    entry_overlay_x = tk.Entry(frame_transform, textvariable=overlay_x, width=5)
+    entry_overlay_x.grid(row=13, column=2, padx=5, pady=5)
+
+    label_overlay_y = tk.Label(frame_transform, text="Координата Y:")
+    label_overlay_y.grid(row=12, column=3, padx=5, pady=5)
+    entry_overlay_y = tk.Entry(frame_transform, textvariable=overlay_y, width=5)
+    entry_overlay_y.grid(row=13, column=3, padx=5, pady=5)
 
     btn_select_codes_dir = tk.Button(root, text="Выбрать директорию с кодами", command=choose_codes_directory)
     btn_select_codes_dir.pack(padx=10, pady=11)
@@ -191,21 +218,18 @@ def generate_and_transform_codes():
         save_settings(settings)
         root.destroy()
 
-    # Выбор типа кода
     tk.Label(root, text="Тип кода:").pack(padx=10, pady=5)
     combo_code_type = ttk.Combobox(root, textvariable=code_type, values=[
-        "code39", "ean8", "ean13", "upca", "upce",
+        "code39", "ean8", "ean13", "gs1-128", "upca", "upce",
         "interleaved2of5", "azteccode", "qrcode",
         "datamatrix", "pdf417", "maxicode"
     ], state="readonly")
     combo_code_type.pack(padx=10, pady=5)
 
-    # Выбор количества кодов
     tk.Label(root, text="Количество кодов:").pack(padx=10, pady=5)
     spin_code_count = tk.Spinbox(root, from_=1, to=1000, textvariable=code_count, width=5)
     spin_code_count.pack(padx=10, pady=5)
 
-    # Выбор данных
     frame_data = tk.LabelFrame(root, text="Тип данных", padx=10, pady=10)
     frame_data.pack(padx=10, pady=10, fill="both", expand=True)
 

@@ -48,7 +48,7 @@ class Generator:
             return bool(re.match(gs1_pattern, data))
 
 
-    def count_black_pixel_changes(self, image):
+    def count_black_pixel_changes_height(self, image):
         image.convert("1")
         width, height = image.size
 
@@ -65,10 +65,27 @@ class Generator:
 
         return change_lines[1]
 
+    def count_black_pixel_changes_width(self, image):
+        image.convert("1")
+        width, height = image.size
+
+        previous_black_count = None
+        change_lines = []
+
+        for x in range(width):
+            black_count = sum(1 for y in range(height) if image.getpixel((x, y)) == 0)
+
+            if previous_black_count is not None and black_count >= height * 0.7:
+                change_lines.append(x)
+
+            previous_black_count = black_count
+
+        return change_lines[1]
+
 
     def get_options(self, barcode_type):
         kb = self.KnowledgeBase()
-        if barcode_type in ["code39", "ean8", "ean13", "ean128", "interleaved2of5", "upca", "upce"]:
+        if barcode_type in ["code39", "ean8", "ean13", "gs1-128", "interleaved2of5", "upca", "upce"]:
             return kb.options["1d"]
         return kb.options["2d"]
 
@@ -109,8 +126,13 @@ class Generator:
                 image = Image.open(file_path)
                 width, height = image.size
                 lower_bound = height
+                left_bound = 0
+                right_bound = width
+                if barcode_type in ["ean_8", "ean_13", "upc_a", "upc_e"]:
+                    left_bound = self.count_black_pixel_changes_width(image)
+                    right_bound = width - left_bound
                 if barcode_type in ["code_39", "ean_8", "ean_13", "ean_128", "interleaved_2_of_5", "upc_a", "upc_e"]:
-                    lower_bound = self.count_black_pixel_changes(image)
+                    lower_bound = self.count_black_pixel_changes_height(image)
                 with open(template_path, 'r') as template_file:
                     json_data = json.load(template_file)
 
@@ -128,7 +150,7 @@ class Generator:
                 json_data["_via_img_metadata"][file_key]["regions"].append({
                     "shape_attributes": {
                         "name": "polyline",
-                        "all_points_x": [0, width, width, 0, 0],
+                        "all_points_x": [left_bound, right_bound, right_bound, left_bound, left_bound],
                         "all_points_y": [lower_bound, lower_bound, 0, 0, lower_bound]
                     },
                     "region_attributes": {

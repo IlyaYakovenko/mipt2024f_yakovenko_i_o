@@ -89,7 +89,7 @@ def make_transformation(image, annotation, barcode_type, type_transform, params)
         transformed_image, transformed_coords = snt.add_noise(int(params["intensity"]))
         new_name += "_noised.png"
     if type_transform == "scale":
-        transformed_image, transformed_coords = snt.zoom(int(params["degree"]))
+        transformed_image, transformed_coords = snt.zoom(float(params["degree"]))
         new_name += "_scaled.png"
     if type_transform == "blur":
         transformed_image, transformed_coords = snt.add_blur(int(params["degree"]))
@@ -101,14 +101,19 @@ def make_transformation(image, annotation, barcode_type, type_transform, params)
         transformed_image, transformed_coords = snt.add_glare(int(params["intensity"]), int(params["radius"]))
         new_name += "_with_glare.png"
     if type_transform == "brightness":
-        transformed_image, transformed_coords = snt.adjust_brightness(int(params["degree"]))
+        transformed_image, transformed_coords = snt.adjust_brightness(float(params["degree"]))
         new_name += "_brightness.png"
     if type_transform == "contrast":
-        transformed_image, transformed_coords = snt.adjust_contrast(int(params["degree"]))
+        transformed_image, transformed_coords = snt.adjust_contrast(float(params["degree"]))
         new_name += "_contrast.png"
     if type_transform == "saturation":
-        transformed_image, transformed_coords = snt.adjust_saturation(int(params["degree"]))
+        transformed_image, transformed_coords = snt.adjust_saturation(float(params["degree"]))
         new_name += "_saturation.png"
+    if type_transform == "overlay":
+        transformed_image, transformed_coords = snt.overlay_barcode_on_background(params["background_file"],
+                                                             params["coordinates"]["x"], params["coordinates"]["y"])
+        new_name += "_pasted.png"
+
 
     if transformed_image and transformed_coords:
         transformed_image.save(file_path_to_save + new_name, format="PNG")
@@ -117,7 +122,6 @@ def make_transformation(image, annotation, barcode_type, type_transform, params)
         print("Не было выполнено преобразований")
 
 def process_settings_file():
-    # Загрузка настроек из файла
     if not os.path.exists("settings.json"):
         print("Файл настроек не найден!")
         return
@@ -125,12 +129,10 @@ def process_settings_file():
     with open("settings.json", "r") as f:
         settings = json.load(f)
 
-    # Если выбрано "сгенерировать коды"
     if "code_type" in settings:
         generate_images_and_annotations(settings["code_type"], settings["code_count"], settings["data_type"])
         return
 
-    # Если выбрано "преобразовать готовые коды"
     if "codes_directory" in settings:
         barcode_path = settings["codes_directory"]
         current_image_dir = barcode_path
@@ -138,16 +140,13 @@ def process_settings_file():
             print(f"Директория с кодами '{current_image_dir}' не найдена!")
             return
 
-        # Получение списка файлов
         files = os.listdir(current_image_dir)
         image_files = [file for file in files if file.endswith((".png", ".jpg", ".jpeg", ".bmp"))]
 
-        # Проверка наличия изображений
         if not image_files:
             print("Изображения для преобразования не найдены!")
             return
 
-        # Итерация по изображениям и последовательное применение преобразований
         for transform_type, transform_params in settings.items():
             if not isinstance(transform_params, dict) or not transform_params.get("enabled", False):
                 continue
@@ -160,7 +159,6 @@ def process_settings_file():
                     print(f"Аннотация для {filename} не найдена, пропуск...")
                     continue
 
-                # Вызов преобразований
                 make_transformation(
                     file_path,
                     annotation,

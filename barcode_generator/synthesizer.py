@@ -5,8 +5,9 @@ from PIL import Image, ImageFilter, ImageDraw, ImageEnhance
 import json
 import math
 
-from pygame.gfxdraw import pixel
-
+from generator import Generator
+gnr = Generator()
+knowledge_base = gnr.KnowledgeBase()
 
 def find_line(x1, y1, x2, y2):
     m = (y2 - y1) / (x2 - x1)
@@ -33,6 +34,7 @@ class Synthesizer:
 
     def create_new_json(self, coords, new_image_name, output_filename):
         file_size = os.path.getsize(self.image_path)
+        type_in_ann = knowledge_base.barcode_types[self.barcode_type.split("_")[0]]
         with open(self.annotation, 'r') as template_file:
             data = json.load(template_file)
 
@@ -55,12 +57,12 @@ class Synthesizer:
                 "all_points_y": [coords[i][1] for i in range(len(coords))]
             },
             "region_attributes": {
-                "type": self.barcode_type
+                "type": type_in_ann
             }
         })
 
         data["_via_img_metadata"][file_key]["file_attributes"] = {}
-        data["_via_attributes"]["region"]["type"]["options"][self.barcode_type] = ""
+        data["_via_attributes"]["region"]["type"]["options"][type_in_ann] = ""
         data["_via_image_id_list"] = [file_key]
 
 
@@ -69,7 +71,7 @@ class Synthesizer:
         return output_filename
 
     def rotate(self, angle):
-        rotated_img = self.image.rotate(angle, expand=True)
+        rotated_img = self.image.rotate(angle, expand=True, resample=Image.BICUBIC)
         angle_rad = -math.radians(angle)
         x_c = self.image.width / 2
         y_c = self.image.height / 2
@@ -145,23 +147,8 @@ class Synthesizer:
 
     def zoom(self, degree):
         sx, sy = degree, degree
-        scaling_matrix = (sx, 0, 0, 0, sy, 0)
-        scaled = self.image.transform((int(self.image.width * sx), int(self.image.height * sy)), Image.AFFINE, scaling_matrix)
-
-        scaled_coords = []
-        scaling_matrix = np.linalg.inv(np.array([
-            [sx, 0, 0],
-            [0, sy, 0],
-            [0, 0, 1]
-        ]))
-        for x, y in self.annotation_coordinates:
-            vec = np.array([x, y, 1])
-            transformed = np.dot(scaling_matrix, vec)
-            if transformed[2] == 0:
-                x_new, y_new = 0, 0
-            else:
-                x_new, y_new = transformed[0] / transformed[2], transformed[1] / transformed[2]
-            scaled_coords.append((x_new, y_new))
+        scaled = self.image.resize((int(self.image.width * sx), int(self.image.height * sy)), resample=Image.LANCZOS)
+        scaled_coords = [(x * sx, y * sy) for x, y in self.annotation_coordinates]
 
         new_image_name = f"{os.path.splitext(os.path.basename(self.image_path))[0]}_scaled.png"
         output_filename = os.path.splitext(os.path.basename(self.annotation))[0] + "_scaled.json"
@@ -207,19 +194,43 @@ class Synthesizer:
         return Image.alpha_composite(self.image.convert("RGBA"), glare).convert("RGB"), self.create_new_json(self.annotation_coordinates, new_image_name, output_filename)
 
     def adjust_brightness(self, factor=0.3):
-        enhancer = ImageEnhance.Brightness(self.image.convert("L"))
+        enhancer = ImageEnhance.Brightness(self.image)
         new_image_name = f"{os.path.splitext(os.path.basename(self.image_path))[0]}_brightness.png"
         output_filename = os.path.splitext(os.path.basename(self.annotation))[0] + "_brightness.json"
         return enhancer.enhance(factor), self.create_new_json(self.annotation_coordinates, new_image_name, output_filename)
 
     def adjust_contrast(self, factor=0.3):
-        enhancer = ImageEnhance.Contrast(self.image.convert("L"))
+        enhancer = ImageEnhance.Contrast(self.image)
         new_image_name = f"{os.path.splitext(os.path.basename(self.image_path))[0]}_contrast.png"
         output_filename = os.path.splitext(os.path.basename(self.annotation))[0] + "_contrast.json"
         return enhancer.enhance(factor), self.create_new_json(self.annotation_coordinates, new_image_name, output_filename)
 
     def adjust_saturation(self, factor=0.3):
-        enhancer = ImageEnhance.Color(self.image.convert("L"))
+        enhancer = ImageEnhance.Color(self.image)
         new_image_name = f"{os.path.splitext(os.path.basename(self.image_path))[0]}_saturation.png"
         output_filename = os.path.splitext(os.path.basename(self.annotation))[0] + "_saturation.json"
         return enhancer.enhance(factor), self.create_new_json(self.annotation_coordinates, new_image_name, output_filename)
+
+    def overlay_barcode_on_background(self, background_image_path, x_off, y_off):
+        background = Image.open(background_image_path)
+
+        x = background.size[0] // 2
+        y = background.size[1] // 2
+
+        background = Image.alpha_composite(
+            Image.new("RGBA", background.size),
+            background.convert('RGBA')
+        )
+
+        background.paste(
+            self.image,
+            (x + x_off, y + y_off),
+            self.image
+        )
+
+        new_coords = [(x_orig + x_off + x, y_orig + y_off + y) for x_orig, y_orig in self.annotation_coordinates]
+
+
+        new_image_name = f"{os.path.splitext(os.path.basename(self.image_path))[0]}_pasted.png"
+        output_filename = os.path.splitext(os.path.basename(self.annotation))[0] + "_pasted.json"
+        return background, self.create_new_json(new_coords, new_image_name, output_filename)
