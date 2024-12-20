@@ -1,5 +1,3 @@
-from numpy.core.defchararray import lower
-
 from generator import Generator
 from synthesizer import Synthesizer
 from frontend import main_window
@@ -10,17 +8,25 @@ import shutil
 import json
 
 def generate_images_and_annotations(barcode_type, number, data_type):
+    """
+        Основная функция для генерации изображений и разметки
+
+        :param barcode_type: Тип штрихкода
+        :param number: Количество генерируемых штрихкодов
+        :param data_type: Тип данных для генерации
+    """
+
     gnr = Generator()
     knowledge_base = gnr.KnowledgeBase()
     if data_type == "random":
         data = gnr.generate_barcode_data(barcode_type, number)
-        with open("/home/ilya/barcode_generator/input.csv", "w") as csv_file:
+        with open("input.csv", "w") as csv_file:
             for item in data:
                 csv_file.write(f"{item}\n")
     else:
-        with open("/home/ilya/barcode_generator/input.csv", "r") as csv_file_r:
+        with open("input.csv", "r") as csv_file_r:
             lines = csv_file_r.readlines()
-        with open("/home/ilya/barcode_generator/input.csv", "w") as csv_file_w:
+        with open("input.csv", "w") as csv_file_w:
             for item in lines:
                 if knowledge_base.validate_barcode(barcode_type, item):
                     csv_file_w.write(f"{item}")
@@ -29,17 +35,17 @@ def generate_images_and_annotations(barcode_type, number, data_type):
 
     options = gnr.get_options(barcode_type)
 
-    with open("/home/ilya/barcode_generator/config.yaml", "r") as yaml_file:
+    with open("config.yaml", "r") as yaml_file:
         config = yaml.safe_load(yaml_file)
 
     config["barcode_type"] = barcode_type
     config["options"] = gnr.format_options(options)
 
-    with open("/home/ilya/barcode_generator/config.yaml", "w") as yaml_file:
+    with open("config.yaml", "w") as yaml_file:
         yaml.dump(config, yaml_file, Dumper=gnr.Dumper)
 
     try:
-        subprocess.run(["/home/ilya/barcode_generator/./start.sh", barcode_type])
+        subprocess.run(["./start.sh", barcode_type])
     except Exception as e:
         print(e)
 
@@ -49,9 +55,19 @@ def generate_images_and_annotations(barcode_type, number, data_type):
     gnr.generate_annotations(knowledge_base.barcode_types[barcode_type], annotation_path, f"all_outputs/{barcode_type}", template_path)
 
 def make_transformation(image, annotation, barcode_type, type_transform, params):
+    """
+        Применяет заданное преобразование к изображению штрихкода и обновляет разметку.
+
+        :param image: Путь к изображению штрихкода
+        :param annotation: Путь к файлу разметки для штрихкода
+        :param barcode_type: Тип штрихкода
+        :param type_transform: Тип преобразования
+        :param params: Параметры преобразования в виде словаря.
+    """
+
     snt = Synthesizer(image, annotation, barcode_type)
     if type_transform == "perspective":
-        name = lower(params["type"].replace(" ", "_"))
+        name = params["type"].replace(" ", "_").lower()
         file_path_to_save = f"transformed_codes/{barcode_type}_{name}/"
         ann_path_to_save = f"transformed_codes/{barcode_type}_{name}_annotation/"
     else:
@@ -122,6 +138,12 @@ def make_transformation(image, annotation, barcode_type, type_transform, params)
         print("Не было выполнено преобразований")
 
 def process_settings_file():
+    """
+        Обрабатывает файл настроек и передает управление соответствующей функции (генератору или синтезатору).
+
+        Если файл настроек содержит "code_type", то включается генератор.
+        Если в файле указана "codes_directory", включается синтезатор.
+    """
     if not os.path.exists("settings.json"):
         print("Файл настроек не найден!")
         return

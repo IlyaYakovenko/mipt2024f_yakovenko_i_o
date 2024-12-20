@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>barcode_generator.frontend &#8212; Barcode Generator 1.0.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=12dfc556" />
+    <script src="../../_static/documentation_options.js?v=8d563738"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for barcode_generator.frontend</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">tkinter</span> <span class="k">as</span> <span class="nn">tk</span>
+<span class="kn">from</span> <span class="nn">tkinter</span> <span class="kn">import</span> <span class="n">ttk</span><span class="p">,</span> <span class="n">messagebox</span><span class="p">,</span> <span class="n">filedialog</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">json</span>
+
+
+<div class="viewcode-block" id="save_settings">
+<a class="viewcode-back" href="../../barcode_generator.html#barcode_generator.frontend.save_settings">[docs]</a>
+<span class="k">def</span> <span class="nf">save_settings</span><span class="p">(</span><span class="n">settings</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Сохраняет настройки в JSON файл.</span>
+
+<span class="sd">        :param settings: Словарь с настройками для сохранения.</span>
+<span class="sd">        :raises IOError: Если произошла ошибка записи файла.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;settings.json&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">settings</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+    <span class="n">messagebox</span><span class="o">.</span><span class="n">showinfo</span><span class="p">(</span><span class="s2">&quot;Сохранение&quot;</span><span class="p">,</span> <span class="s2">&quot;Настройки успешно сохранены!&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="choose_file">
+<a class="viewcode-back" href="../../barcode_generator.html#barcode_generator.frontend.choose_file">[docs]</a>
+<span class="k">def</span> <span class="nf">choose_file</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Открывает диалоговое окно для выбора файла.</span>
+
+<span class="sd">        :return: Путь к выбранному файлу.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">file_path</span> <span class="o">=</span> <span class="n">filedialog</span><span class="o">.</span><span class="n">askopenfilename</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Выберите файл текстуры&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">file_path</span></div>
+
+
+
+<div class="viewcode-block" id="select_directory">
+<a class="viewcode-back" href="../../barcode_generator.html#barcode_generator.frontend.select_directory">[docs]</a>
+<span class="k">def</span> <span class="nf">select_directory</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Открывает диалоговое окно для выбора директории.</span>
+
+<span class="sd">        :return: Путь к выбранной директории.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">filedialog</span><span class="o">.</span><span class="n">askdirectory</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Выберите директорию&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="transform_existing_codes">
+<a class="viewcode-back" href="../../barcode_generator.html#barcode_generator.frontend.transform_existing_codes">[docs]</a>
+<span class="k">def</span> <span class="nf">transform_existing_codes</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Открывает графический интерфейс для настройки преобразований существующих кодов.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Tk</span><span class="p">()</span>
+    <span class="n">root</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Преобразовать готовые коды&quot;</span><span class="p">)</span>
+
+    <span class="n">codes_directory</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">StringVar</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">choose_codes_directory</span><span class="p">():</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Открывает диалоговое окно для выбора директории с кодами.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">directory</span> <span class="o">=</span> <span class="n">select_directory</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">directory</span><span class="p">:</span>
+            <span class="n">codes_directory</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">directory</span><span class="p">)</span>
+
+    <span class="n">var_rotate</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">BooleanVar</span><span class="p">()</span>
+    <span class="n">var_noise</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">BooleanVar</span><span class="p">()</span>
+    <span class="n">var_perspective</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">BooleanVar</span><span class="p">()</span>
+    <span class="n">var_scale</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">BooleanVar</span><span class="p">()</span>
+    <span class="n">var_blur</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">BooleanVar</span><span class="p">()</span>
+    <span class="n">var_brightness</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">BooleanVar</span><span class="p">()</span>
+    <span class="n">var_contrast</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">BooleanVar</span><span class="p">()</span>
+    <span class="n">var_saturation</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">BooleanVar</span><span class="p">()</span>
+    <span class="n">var_glare</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">BooleanVar</span><span class="p">()</span>
+    <span class="n">var_texture</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">BooleanVar</span><span class="p">()</span>
+    <span class="n">var_overlay</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">BooleanVar</span><span class="p">()</span>
+    <span class="n">background_file</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">StringVar</span><span class="p">()</span>
+    <span class="n">overlay_x</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">IntVar</span><span class="p">()</span>
+    <span class="n">overlay_y</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">IntVar</span><span class="p">()</span>
+
+    <span class="n">settings</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span> <span class="nf">save_transform_settings</span><span class="p">():</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Сохраняет настройки преобразования в JSON файл.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">settings</span><span class="p">[</span><span class="s2">&quot;codes_directory&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">codes_directory</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="n">settings</span><span class="p">[</span><span class="s2">&quot;rotate&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;enabled&quot;</span><span class="p">:</span> <span class="n">var_rotate</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="s2">&quot;angle&quot;</span><span class="p">:</span> <span class="n">entry_angle</span><span class="o">.</span><span class="n">get</span><span class="p">()}</span>
+        <span class="n">settings</span><span class="p">[</span><span class="s2">&quot;noise&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;enabled&quot;</span><span class="p">:</span> <span class="n">var_noise</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="s2">&quot;intensity&quot;</span><span class="p">:</span> <span class="n">entry_noise</span><span class="o">.</span><span class="n">get</span><span class="p">()}</span>
+        <span class="n">settings</span><span class="p">[</span><span class="s2">&quot;perspective&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;enabled&quot;</span><span class="p">:</span> <span class="n">var_perspective</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
+            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">combo_perspective</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
+            <span class="c1">#&quot;degree&quot;: entry_perspective.get(),</span>
+        <span class="p">}</span>
+        <span class="n">settings</span><span class="p">[</span><span class="s2">&quot;scale&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;enabled&quot;</span><span class="p">:</span> <span class="n">var_scale</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="s2">&quot;degree&quot;</span><span class="p">:</span> <span class="n">entry_scale</span><span class="o">.</span><span class="n">get</span><span class="p">()}</span>
+        <span class="n">settings</span><span class="p">[</span><span class="s2">&quot;blur&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;enabled&quot;</span><span class="p">:</span> <span class="n">var_blur</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="s2">&quot;degree&quot;</span><span class="p">:</span> <span class="n">entry_blur</span><span class="o">.</span><span class="n">get</span><span class="p">()}</span>
+        <span class="n">settings</span><span class="p">[</span><span class="s2">&quot;brightness&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;enabled&quot;</span><span class="p">:</span> <span class="n">var_brightness</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="s2">&quot;degree&quot;</span><span class="p">:</span> <span class="n">entry_brightness</span><span class="o">.</span><span class="n">get</span><span class="p">()}</span>
+        <span class="n">settings</span><span class="p">[</span><span class="s2">&quot;contrast&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;enabled&quot;</span><span class="p">:</span> <span class="n">var_contrast</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="s2">&quot;degree&quot;</span><span class="p">:</span> <span class="n">entry_contrast</span><span class="o">.</span><span class="n">get</span><span class="p">()}</span>
+        <span class="n">settings</span><span class="p">[</span><span class="s2">&quot;saturation&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;enabled&quot;</span><span class="p">:</span> <span class="n">var_saturation</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="s2">&quot;degree&quot;</span><span class="p">:</span> <span class="n">entry_saturation</span><span class="o">.</span><span class="n">get</span><span class="p">()}</span>
+        <span class="n">settings</span><span class="p">[</span><span class="s2">&quot;glare&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;enabled&quot;</span><span class="p">:</span> <span class="n">var_glare</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
+            <span class="s2">&quot;intensity&quot;</span><span class="p">:</span> <span class="n">entry_glare_intensity</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
+            <span class="s2">&quot;radius&quot;</span><span class="p">:</span> <span class="n">entry_glare_radius</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
+            <span class="c1">#&quot;position&quot;: entry_glare_position.get(),</span>
+        <span class="p">}</span>
+        <span class="n">settings</span><span class="p">[</span><span class="s2">&quot;texture&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;enabled&quot;</span><span class="p">:</span> <span class="n">var_texture</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="s2">&quot;texture_file&quot;</span> <span class="p">:</span> <span class="n">texture_file_var</span><span class="o">.</span><span class="n">get</span><span class="p">()}</span>
+        <span class="n">settings</span><span class="p">[</span><span class="s2">&quot;overlay&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;enabled&quot;</span><span class="p">:</span> <span class="n">var_overlay</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
+            <span class="s2">&quot;background_file&quot;</span><span class="p">:</span> <span class="n">background_file</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
+            <span class="s2">&quot;coordinates&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="n">overlay_x</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="n">overlay_y</span><span class="o">.</span><span class="n">get</span><span class="p">()}</span>
+        <span class="p">}</span>
+        <span class="n">save_settings</span><span class="p">(</span><span class="n">settings</span><span class="p">)</span>
+        <span class="n">root</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
+
+    <span class="n">frame_transform</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">LabelFrame</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Выберите преобразования&quot;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+    <span class="n">frame_transform</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">padx</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">&quot;both&quot;</span><span class="p">,</span> <span class="n">expand</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">check_perspective</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Checkbutton</span><span class="p">(</span><span class="n">frame_transform</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Проективное искажение&quot;</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">var_perspective</span><span class="p">)</span>
+    <span class="n">check_perspective</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+    <span class="n">label_perspective_type</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">frame_transform</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Тип:&quot;</span><span class="p">)</span>
+    <span class="n">label_perspective_type</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">combo_perspective</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Combobox</span><span class="p">(</span><span class="n">frame_transform</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Down view&quot;</span><span class="p">,</span> <span class="s2">&quot;Top view&quot;</span><span class="p">,</span> <span class="s2">&quot;Left view&quot;</span><span class="p">,</span> <span class="s2">&quot;Right view&quot;</span><span class="p">],</span> <span class="n">state</span><span class="o">=</span><span class="s2">&quot;readonly&quot;</span><span class="p">)</span>
+    <span class="n">combo_perspective</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+    <span class="c1"># label_perspective_degree = tk.Label(frame_transform, text=&quot;Степень:&quot;)</span>
+    <span class="c1"># label_perspective_degree.grid(row=0, column=3, padx=5)</span>
+    <span class="c1"># entry_perspective = tk.Entry(frame_transform, width=5)</span>
+    <span class="c1"># entry_perspective.grid(row=0, column=4, padx=5)</span>
+
+    <span class="n">check_rotate</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Checkbutton</span><span class="p">(</span><span class="n">frame_transform</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Поворот&quot;</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">var_rotate</span><span class="p">)</span>
+    <span class="n">check_rotate</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+    <span class="n">label_angle</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">frame_transform</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Угол:&quot;</span><span class="p">)</span>
+    <span class="n">label_angle</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">entry_angle</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Entry</span><span class="p">(</span><span class="n">frame_transform</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">entry_angle</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+    <span class="n">check_noise</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Checkbutton</span><span class="p">(</span><span class="n">frame_transform</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Шум&quot;</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">var_noise</span><span class="p">)</span>
+    <span class="n">check_noise</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+    <span class="n">label_noise</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">frame_transform</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Интенсивность (0-255):&quot;</span><span class="p">)</span>
+    <span class="n">label_noise</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">entry_noise</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Entry</span><span class="p">(</span><span class="n">frame_transform</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">entry_noise</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+    <span class="n">check_scale</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Checkbutton</span><span class="p">(</span><span class="n">frame_transform</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Масштаб&quot;</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">var_scale</span><span class="p">)</span>
+    <span class="n">check_scale</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+    <span class="n">label_scale</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">frame_transform</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Коэффициент масштабирования:&quot;</span><span class="p">)</span>
+    <span class="n">label_scale</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">entry_scale</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Entry</span><span class="p">(</span><span class="n">frame_transform</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">entry_scale</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+    <span class="n">check_blur</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Checkbutton</span><span class="p">(</span><span class="n">frame_transform</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Размытие&quot;</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">var_blur</span><span class="p">)</span>
+    <span class="n">check_blur</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+    <span class="n">label_blur</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">frame_transform</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Глубина размытия:&quot;</span><span class="p">)</span>
+    <span class="n">label_blur</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">entry_blur</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Entry</span><span class="p">(</span><span class="n">frame_transform</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">entry_blur</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+    <span class="n">check_brightness</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Checkbutton</span><span class="p">(</span><span class="n">frame_transform</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Яркость&quot;</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">var_brightness</span><span class="p">)</span>
+    <span class="n">check_brightness</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+    <span class="n">label_brightness</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">frame_transform</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Уровень яркости (&gt; 0):&quot;</span><span class="p">)</span>
+    <span class="n">label_brightness</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">entry_brightness</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Entry</span><span class="p">(</span><span class="n">frame_transform</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">entry_brightness</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+    <span class="n">check_contrast</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Checkbutton</span><span class="p">(</span><span class="n">frame_transform</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Контрастность&quot;</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">var_contrast</span><span class="p">)</span>
+    <span class="n">check_contrast</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+    <span class="n">label_contrast</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">frame_transform</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Глубина контраста (&gt; 0):&quot;</span><span class="p">)</span>
+    <span class="n">label_contrast</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">entry_contrast</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Entry</span><span class="p">(</span><span class="n">frame_transform</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">entry_contrast</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+    <span class="n">check_saturation</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Checkbutton</span><span class="p">(</span><span class="n">frame_transform</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Насыщенность&quot;</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">var_saturation</span><span class="p">)</span>
+    <span class="n">check_saturation</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+    <span class="n">label_saturation</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">frame_transform</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Интенсивность цветов (&gt; 0):&quot;</span><span class="p">)</span>
+    <span class="n">label_saturation</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">entry_saturation</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Entry</span><span class="p">(</span><span class="n">frame_transform</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">entry_saturation</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+    <span class="n">check_glare</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Checkbutton</span><span class="p">(</span><span class="n">frame_transform</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Блик&quot;</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">var_glare</span><span class="p">)</span>
+    <span class="n">check_glare</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+    <span class="n">label_glare_intensity</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">frame_transform</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Интенсивность:&quot;</span><span class="p">)</span>
+    <span class="n">label_glare_intensity</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">entry_glare_intensity</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Entry</span><span class="p">(</span><span class="n">frame_transform</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">entry_glare_intensity</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+    <span class="n">label_glare_radius</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">frame_transform</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Радиус:&quot;</span><span class="p">)</span>
+    <span class="n">label_glare_radius</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">entry_glare_radius</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Entry</span><span class="p">(</span><span class="n">frame_transform</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">entry_glare_radius</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+    <span class="c1"># label_glare_position = tk.Label(frame_transform, text=&quot;Позиция:&quot;)</span>
+    <span class="c1"># label_glare_position.grid(row=10, column=1, padx=5)</span>
+    <span class="c1"># entry_glare_position = tk.Entry(frame_transform, width=5)</span>
+    <span class="c1"># entry_glare_position.grid(row=10, column=2, padx=5)</span>
+
+    <span class="n">check_texture</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Checkbutton</span><span class="p">(</span><span class="n">frame_transform</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Текстура&quot;</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">var_texture</span><span class="p">)</span>
+    <span class="n">check_texture</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">texture_file_var</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">StringVar</span><span class="p">()</span>
+    <span class="n">btn_select_texture</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">frame_transform</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Выбрать текстуру&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">texture_file_var</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">choose_file</span><span class="p">()))</span>
+    <span class="n">btn_select_texture</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+
+    <span class="n">check_overlay</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Checkbutton</span><span class="p">(</span><span class="n">frame_transform</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Наложить на фон&quot;</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">var_overlay</span><span class="p">)</span>
+    <span class="n">check_overlay</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+    <span class="n">btn_select_background</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">frame_transform</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Выбрать фон&quot;</span><span class="p">,</span>
+                                      <span class="n">command</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">background_file</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">choose_file</span><span class="p">()))</span>
+    <span class="n">btn_select_background</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+    <span class="n">label_overlay_x</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">frame_transform</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Координата X:&quot;</span><span class="p">)</span>
+    <span class="n">label_overlay_x</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">entry_overlay_x</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Entry</span><span class="p">(</span><span class="n">frame_transform</span><span class="p">,</span> <span class="n">textvariable</span><span class="o">=</span><span class="n">overlay_x</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">entry_overlay_x</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">13</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+    <span class="n">label_overlay_y</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">frame_transform</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Координата Y:&quot;</span><span class="p">)</span>
+    <span class="n">label_overlay_y</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">entry_overlay_y</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Entry</span><span class="p">(</span><span class="n">frame_transform</span><span class="p">,</span> <span class="n">textvariable</span><span class="o">=</span><span class="n">overlay_y</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">entry_overlay_y</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">13</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+    <span class="n">btn_select_codes_dir</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Выбрать директорию с кодами&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="n">choose_codes_directory</span><span class="p">)</span>
+    <span class="n">btn_select_codes_dir</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">padx</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="mi">11</span><span class="p">)</span>
+
+    <span class="n">frame_transform</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">LabelFrame</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Выберите преобразования&quot;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+    <span class="n">frame_transform</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">padx</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">&quot;both&quot;</span><span class="p">,</span> <span class="n">expand</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">button_save</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Сохранить настройки&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="n">save_transform_settings</span><span class="p">)</span>
+    <span class="n">button_save</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">pady</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+    <span class="n">root</span><span class="o">.</span><span class="n">mainloop</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="generate_and_transform_codes">
+<a class="viewcode-back" href="../../barcode_generator.html#barcode_generator.frontend.generate_and_transform_codes">[docs]</a>
+<span class="k">def</span> <span class="nf">generate_and_transform_codes</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Открывает графический интерфейс для генерации и преобразования новых кодов.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Tk</span><span class="p">()</span>
+    <span class="n">root</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Сгенерировать и преобразовать коды&quot;</span><span class="p">)</span>
+    <span class="n">code_type</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">StringVar</span><span class="p">()</span>
+    <span class="n">code_count</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">IntVar</span><span class="p">()</span>
+    <span class="n">data_type</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">StringVar</span><span class="p">()</span>
+
+    <span class="n">settings</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span> <span class="nf">save_generate_settings</span><span class="p">():</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">               Сохраняет настройки генерации в JSON файл.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">settings</span><span class="p">[</span><span class="s2">&quot;code_type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">code_type</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="n">settings</span><span class="p">[</span><span class="s2">&quot;code_count&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">code_count</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="n">settings</span><span class="p">[</span><span class="s2">&quot;data_type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_type</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="n">save_settings</span><span class="p">(</span><span class="n">settings</span><span class="p">)</span>
+        <span class="n">root</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
+
+    <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Тип кода:&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">padx</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">combo_code_type</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Combobox</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">textvariable</span><span class="o">=</span><span class="n">code_type</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="p">[</span>
+        <span class="s2">&quot;code39&quot;</span><span class="p">,</span> <span class="s2">&quot;ean8&quot;</span><span class="p">,</span> <span class="s2">&quot;ean13&quot;</span><span class="p">,</span> <span class="s2">&quot;gs1-128&quot;</span><span class="p">,</span> <span class="s2">&quot;upca&quot;</span><span class="p">,</span> <span class="s2">&quot;upce&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;interleaved2of5&quot;</span><span class="p">,</span> <span class="s2">&quot;azteccode&quot;</span><span class="p">,</span> <span class="s2">&quot;qrcode&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;datamatrix&quot;</span><span class="p">,</span> <span class="s2">&quot;pdf417&quot;</span><span class="p">,</span> <span class="s2">&quot;maxicode&quot;</span>
+    <span class="p">],</span> <span class="n">state</span><span class="o">=</span><span class="s2">&quot;readonly&quot;</span><span class="p">)</span>
+    <span class="n">combo_code_type</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">padx</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+    <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Количество кодов:&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">padx</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">spin_code_count</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Spinbox</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">from_</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">to</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">textvariable</span><span class="o">=</span><span class="n">code_count</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">spin_code_count</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">padx</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+    <span class="n">frame_data</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">LabelFrame</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Тип данных&quot;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+    <span class="n">frame_data</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">padx</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">&quot;both&quot;</span><span class="p">,</span> <span class="n">expand</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">radio_random</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Radiobutton</span><span class="p">(</span><span class="n">frame_data</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Случайные данные&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;random&quot;</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">data_type</span><span class="p">)</span>
+    <span class="n">radio_random</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">anchor</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">)</span>
+
+    <span class="n">radio_custom</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Radiobutton</span><span class="p">(</span><span class="n">frame_data</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Собственные данные&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;custom&quot;</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">data_type</span><span class="p">)</span>
+    <span class="n">radio_custom</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">anchor</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">)</span>
+
+    <span class="n">button_save</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Сохранить настройки&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="n">save_generate_settings</span><span class="p">)</span>
+    <span class="n">button_save</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">pady</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+    <span class="n">root</span><span class="o">.</span><span class="n">mainloop</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="main_window">
+<a class="viewcode-back" href="../../barcode_generator.html#barcode_generator.frontend.main_window">[docs]</a>
+<span class="k">def</span> <span class="nf">main_window</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">       Запускает главное окно приложения с выбором режима работы.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Tk</span><span class="p">()</span>
+    <span class="n">root</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Выберите опцию&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">open_transform_existing</span><span class="p">():</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Открывает окно для преобразования существующих кодов.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">root</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
+        <span class="n">transform_existing_codes</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">open_generate_and_transform</span><span class="p">():</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Открывает окно для генерации и преобразования новых кодов.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">root</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
+        <span class="n">generate_and_transform_codes</span><span class="p">()</span>
+
+
+    <span class="n">btn_generate_and_transform</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Сгенерировать коды&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="n">open_generate_and_transform</span><span class="p">)</span>
+    <span class="n">btn_generate_and_transform</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">padx</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+    <span class="n">btn_transform_existing</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Преобразовать готовые коды&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="n">open_transform_existing</span><span class="p">)</span>
+    <span class="n">btn_transform_existing</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">padx</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+    <span class="n">root</span><span class="o">.</span><span class="n">mainloop</span><span class="p">()</span></div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">Barcode Generator</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">barcode_generator</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2024, Ilya Yakovenko.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.3.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

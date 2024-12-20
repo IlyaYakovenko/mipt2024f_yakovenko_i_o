@@ -1,0 +1,45 @@
+barcode\_generator package
+==========================
+
+Submodules
+----------
+
+barcode\_generator.frontend module
+----------------------------------
+
+.. automodule:: barcode_generator.frontend
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+barcode\_generator.generator module
+-----------------------------------
+
+.. automodule:: barcode_generator.generator
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+barcode\_generator.main module
+------------------------------
+
+.. automodule:: barcode_generator.main
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+barcode\_generator.synthesizer module
+-------------------------------------
+
+.. automodule:: barcode_generator.synthesizer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: barcode_generator
+   :members:
+   :undoc-members:
+   :show-inheritance:

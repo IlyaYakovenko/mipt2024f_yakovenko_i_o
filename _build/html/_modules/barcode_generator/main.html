@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>barcode_generator.main &#8212; Barcode Generator 1.0.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=12dfc556" />
+    <script src="../../_static/documentation_options.js?v=8d563738"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for barcode_generator.main</h1><div class="highlight"><pre>
+<span></span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">yaml</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">json</span>
+
+<div class="viewcode-block" id="generate_images_and_annotations">
+<a class="viewcode-back" href="../../barcode_generator.html#barcode_generator.main.generate_images_and_annotations">[docs]</a>
+<span class="k">def</span> <span class="nf">generate_images_and_annotations</span><span class="p">(</span><span class="n">barcode_type</span><span class="p">,</span> <span class="n">number</span><span class="p">,</span> <span class="n">data_type</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Основная функция для генерации изображений и разметки</span>
+
+<span class="sd">        :param barcode_type: Тип штрихкода</span>
+<span class="sd">        :param number: Количество генерируемых штрихкодов</span>
+<span class="sd">        :param data_type: Тип данных для генерации</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">gnr</span> <span class="o">=</span> <span class="n">Generator</span><span class="p">()</span>
+    <span class="n">knowledge_base</span> <span class="o">=</span> <span class="n">gnr</span><span class="o">.</span><span class="n">KnowledgeBase</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">data_type</span> <span class="o">==</span> <span class="s2">&quot;random&quot;</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">gnr</span><span class="o">.</span><span class="n">generate_barcode_data</span><span class="p">(</span><span class="n">barcode_type</span><span class="p">,</span> <span class="n">number</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;input.csv&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">csv_file</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+                <span class="n">csv_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">item</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;input.csv&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">csv_file_r</span><span class="p">:</span>
+            <span class="n">lines</span> <span class="o">=</span> <span class="n">csv_file_r</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;input.csv&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">csv_file_w</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">knowledge_base</span><span class="o">.</span><span class="n">validate_barcode</span><span class="p">(</span><span class="n">barcode_type</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+                    <span class="n">csv_file_w</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">item</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Wrong data: &quot;</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
+
+    <span class="n">options</span> <span class="o">=</span> <span class="n">gnr</span><span class="o">.</span><span class="n">get_options</span><span class="p">(</span><span class="n">barcode_type</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;config.yaml&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">yaml_file</span><span class="p">:</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">yaml_file</span><span class="p">)</span>
+
+    <span class="n">config</span><span class="p">[</span><span class="s2">&quot;barcode_type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">barcode_type</span>
+    <span class="n">config</span><span class="p">[</span><span class="s2">&quot;options&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gnr</span><span class="o">.</span><span class="n">format_options</span><span class="p">(</span><span class="n">options</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;config.yaml&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">yaml_file</span><span class="p">:</span>
+        <span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">yaml_file</span><span class="p">,</span> <span class="n">Dumper</span><span class="o">=</span><span class="n">gnr</span><span class="o">.</span><span class="n">Dumper</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s2">&quot;./start.sh&quot;</span><span class="p">,</span> <span class="n">barcode_type</span><span class="p">])</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+
+    <span class="n">annotation_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;all_outputs&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">barcode_type</span><span class="si">}</span><span class="s2">_annotation&quot;</span><span class="p">)</span>
+    <span class="n">template_path</span> <span class="o">=</span> <span class="s2">&quot;template.json&quot;</span>
+
+    <span class="n">gnr</span><span class="o">.</span><span class="n">generate_annotations</span><span class="p">(</span><span class="n">knowledge_base</span><span class="o">.</span><span class="n">barcode_types</span><span class="p">[</span><span class="n">barcode_type</span><span class="p">],</span> <span class="n">annotation_path</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;all_outputs/</span><span class="si">{</span><span class="n">barcode_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">template_path</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="make_transformation">
+<a class="viewcode-back" href="../../barcode_generator.html#barcode_generator.main.make_transformation">[docs]</a>
+<span class="k">def</span> <span class="nf">make_transformation</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">annotation</span><span class="p">,</span> <span class="n">barcode_type</span><span class="p">,</span> <span class="n">type_transform</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Применяет заданное преобразование к изображению штрихкода и обновляет разметку.</span>
+
+<span class="sd">        :param image: Путь к изображению штрихкода</span>
+<span class="sd">        :param annotation: Путь к файлу разметки для штрихкода</span>
+<span class="sd">        :param barcode_type: Тип штрихкода</span>
+<span class="sd">        :param type_transform: Тип преобразования</span>
+<span class="sd">        :param params: Параметры преобразования в виде словаря.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">snt</span> <span class="o">=</span> <span class="n">Synthesizer</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">annotation</span><span class="p">,</span> <span class="n">barcode_type</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">type_transform</span> <span class="o">==</span> <span class="s2">&quot;perspective&quot;</span><span class="p">:</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="n">file_path_to_save</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;transformed_codes/</span><span class="si">{</span><span class="n">barcode_type</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">/&quot;</span>
+        <span class="n">ann_path_to_save</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;transformed_codes/</span><span class="si">{</span><span class="n">barcode_type</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">_annotation/&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">file_path_to_save</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;transformed_codes/</span><span class="si">{</span><span class="n">barcode_type</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">type_transform</span><span class="si">}</span><span class="s2">/&quot;</span>
+        <span class="n">ann_path_to_save</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;transformed_codes/</span><span class="si">{</span><span class="n">barcode_type</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">type_transform</span><span class="si">}</span><span class="s2">_annotation/&quot;</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">file_path_to_save</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">ann_path_to_save</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">width</span> <span class="o">=</span> <span class="n">snt</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">width</span>
+    <span class="n">height</span> <span class="o">=</span> <span class="n">snt</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">height</span>
+    <span class="n">orig_points</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">height</span><span class="p">)]</span>
+    <span class="n">transformed_image</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">transformed_coords</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">new_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;/</span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">image</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="k">if</span> <span class="n">type_transform</span> <span class="o">==</span> <span class="s2">&quot;rotate&quot;</span><span class="p">:</span>
+        <span class="n">transformed_image</span><span class="p">,</span> <span class="n">transformed_coords</span> <span class="o">=</span> <span class="n">snt</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;angle&quot;</span><span class="p">]))</span>
+        <span class="n">new_name</span> <span class="o">+=</span> <span class="s2">&quot;_rotated.png&quot;</span>
+    <span class="k">if</span> <span class="n">type_transform</span> <span class="o">==</span> <span class="s2">&quot;perspective&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">params</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Down view&quot;</span><span class="p">:</span>
+            <span class="n">dst_points</span> <span class="o">=</span> <span class="p">[(</span><span class="o">-</span><span class="n">width</span> <span class="o">*</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="n">width</span> <span class="o">*</span> <span class="mf">1.3</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">height</span><span class="p">)]</span>
+            <span class="n">transformed_image</span><span class="p">,</span> <span class="n">transformed_coords</span> <span class="o">=</span> <span class="n">snt</span><span class="o">.</span><span class="n">change_perspective</span><span class="p">(</span><span class="n">orig_points</span><span class="p">,</span> <span class="n">dst_points</span><span class="p">)</span>
+            <span class="n">new_name</span> <span class="o">+=</span> <span class="s2">&quot;_perspective.png&quot;</span>
+        <span class="k">if</span> <span class="n">params</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Top view&quot;</span><span class="p">:</span>
+            <span class="n">dst_points</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="n">width</span> <span class="o">*</span> <span class="mf">1.3</span><span class="p">,</span> <span class="n">height</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="n">width</span> <span class="o">*</span> <span class="mf">0.3</span><span class="p">,</span> <span class="n">height</span><span class="p">)]</span>
+            <span class="n">transformed_image</span><span class="p">,</span> <span class="n">transformed_coords</span> <span class="o">=</span> <span class="n">snt</span><span class="o">.</span><span class="n">change_perspective</span><span class="p">(</span><span class="n">orig_points</span><span class="p">,</span> <span class="n">dst_points</span><span class="p">)</span>
+            <span class="n">new_name</span> <span class="o">+=</span> <span class="s2">&quot;_perspective.png&quot;</span>
+        <span class="k">if</span> <span class="n">params</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Left view&quot;</span><span class="p">:</span>
+            <span class="n">dst_points</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="o">-</span><span class="n">height</span> <span class="o">*</span> <span class="mf">0.3</span><span class="p">),</span> <span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">*</span> <span class="mf">1.3</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">height</span><span class="p">)]</span>
+            <span class="n">transformed_image</span><span class="p">,</span> <span class="n">transformed_coords</span> <span class="o">=</span> <span class="n">snt</span><span class="o">.</span><span class="n">change_perspective</span><span class="p">(</span><span class="n">orig_points</span><span class="p">,</span> <span class="n">dst_points</span><span class="p">)</span>
+            <span class="n">new_name</span> <span class="o">+=</span> <span class="s2">&quot;_perspective.png&quot;</span>
+        <span class="k">if</span> <span class="n">params</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Right view&quot;</span><span class="p">:</span>
+            <span class="n">dst_points</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="n">height</span> <span class="o">*</span> <span class="mf">0.3</span><span class="p">),</span> <span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1.3</span> <span class="o">*</span> <span class="n">height</span><span class="p">)]</span>
+            <span class="n">transformed_image</span><span class="p">,</span> <span class="n">transformed_coords</span> <span class="o">=</span> <span class="n">snt</span><span class="o">.</span><span class="n">change_perspective</span><span class="p">(</span><span class="n">orig_points</span><span class="p">,</span> <span class="n">dst_points</span><span class="p">)</span>
+            <span class="n">new_name</span>  <span class="o">+=</span> <span class="s2">&quot;_perspective.png&quot;</span>
+    <span class="k">if</span> <span class="n">type_transform</span> <span class="o">==</span> <span class="s2">&quot;noise&quot;</span><span class="p">:</span>
+        <span class="n">transformed_image</span><span class="p">,</span> <span class="n">transformed_coords</span> <span class="o">=</span> <span class="n">snt</span><span class="o">.</span><span class="n">add_noise</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;intensity&quot;</span><span class="p">]))</span>
+        <span class="n">new_name</span> <span class="o">+=</span> <span class="s2">&quot;_noised.png&quot;</span>
+    <span class="k">if</span> <span class="n">type_transform</span> <span class="o">==</span> <span class="s2">&quot;scale&quot;</span><span class="p">:</span>
+        <span class="n">transformed_image</span><span class="p">,</span> <span class="n">transformed_coords</span> <span class="o">=</span> <span class="n">snt</span><span class="o">.</span><span class="n">zoom</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;degree&quot;</span><span class="p">]))</span>
+        <span class="n">new_name</span> <span class="o">+=</span> <span class="s2">&quot;_scaled.png&quot;</span>
+    <span class="k">if</span> <span class="n">type_transform</span> <span class="o">==</span> <span class="s2">&quot;blur&quot;</span><span class="p">:</span>
+        <span class="n">transformed_image</span><span class="p">,</span> <span class="n">transformed_coords</span> <span class="o">=</span> <span class="n">snt</span><span class="o">.</span><span class="n">add_blur</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;degree&quot;</span><span class="p">]))</span>
+        <span class="n">new_name</span> <span class="o">+=</span> <span class="s2">&quot;_blured.png&quot;</span>
+    <span class="k">if</span> <span class="n">type_transform</span> <span class="o">==</span> <span class="s2">&quot;texture&quot;</span><span class="p">:</span>
+        <span class="n">transformed_image</span><span class="p">,</span> <span class="n">transformed_coords</span> <span class="o">=</span> <span class="n">snt</span><span class="o">.</span><span class="n">add_texture</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;texture_file&quot;</span><span class="p">])</span>
+        <span class="n">new_name</span> <span class="o">+=</span> <span class="s2">&quot;_textured.png&quot;</span>
+    <span class="k">if</span> <span class="n">type_transform</span> <span class="o">==</span> <span class="s2">&quot;glare&quot;</span><span class="p">:</span>
+        <span class="n">transformed_image</span><span class="p">,</span> <span class="n">transformed_coords</span> <span class="o">=</span> <span class="n">snt</span><span class="o">.</span><span class="n">add_glare</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;intensity&quot;</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;radius&quot;</span><span class="p">]))</span>
+        <span class="n">new_name</span> <span class="o">+=</span> <span class="s2">&quot;_with_glare.png&quot;</span>
+    <span class="k">if</span> <span class="n">type_transform</span> <span class="o">==</span> <span class="s2">&quot;brightness&quot;</span><span class="p">:</span>
+        <span class="n">transformed_image</span><span class="p">,</span> <span class="n">transformed_coords</span> <span class="o">=</span> <span class="n">snt</span><span class="o">.</span><span class="n">adjust_brightness</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;degree&quot;</span><span class="p">]))</span>
+        <span class="n">new_name</span> <span class="o">+=</span> <span class="s2">&quot;_brightness.png&quot;</span>
+    <span class="k">if</span> <span class="n">type_transform</span> <span class="o">==</span> <span class="s2">&quot;contrast&quot;</span><span class="p">:</span>
+        <span class="n">transformed_image</span><span class="p">,</span> <span class="n">transformed_coords</span> <span class="o">=</span> <span class="n">snt</span><span class="o">.</span><span class="n">adjust_contrast</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;degree&quot;</span><span class="p">]))</span>
+        <span class="n">new_name</span> <span class="o">+=</span> <span class="s2">&quot;_contrast.png&quot;</span>
+    <span class="k">if</span> <span class="n">type_transform</span> <span class="o">==</span> <span class="s2">&quot;saturation&quot;</span><span class="p">:</span>
+        <span class="n">transformed_image</span><span class="p">,</span> <span class="n">transformed_coords</span> <span class="o">=</span> <span class="n">snt</span><span class="o">.</span><span class="n">adjust_saturation</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;degree&quot;</span><span class="p">]))</span>
+        <span class="n">new_name</span> <span class="o">+=</span> <span class="s2">&quot;_saturation.png&quot;</span>
+    <span class="k">if</span> <span class="n">type_transform</span> <span class="o">==</span> <span class="s2">&quot;overlay&quot;</span><span class="p">:</span>
+        <span class="n">transformed_image</span><span class="p">,</span> <span class="n">transformed_coords</span> <span class="o">=</span> <span class="n">snt</span><span class="o">.</span><span class="n">overlay_barcode_on_background</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;background_file&quot;</span><span class="p">],</span>
+                                                             <span class="n">params</span><span class="p">[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">][</span><span class="s2">&quot;x&quot;</span><span class="p">],</span> <span class="n">params</span><span class="p">[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">][</span><span class="s2">&quot;y&quot;</span><span class="p">])</span>
+        <span class="n">new_name</span> <span class="o">+=</span> <span class="s2">&quot;_pasted.png&quot;</span>
+
+
+    <span class="k">if</span> <span class="n">transformed_image</span> <span class="ow">and</span> <span class="n">transformed_coords</span><span class="p">:</span>
+        <span class="n">transformed_image</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">file_path_to_save</span> <span class="o">+</span> <span class="n">new_name</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;PNG&quot;</span><span class="p">)</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">transformed_coords</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ann_path_to_save</span><span class="p">,</span> <span class="n">transformed_coords</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Не было выполнено преобразований&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="process_settings_file">
+<a class="viewcode-back" href="../../barcode_generator.html#barcode_generator.main.process_settings_file">[docs]</a>
+<span class="k">def</span> <span class="nf">process_settings_file</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Обрабатывает файл настроек и передает управление соответствующей функции (генератору или синтезатору).</span>
+
+<span class="sd">        Если файл настроек содержит &quot;code_type&quot;, то включается генератор.</span>
+<span class="sd">        Если в файле указана &quot;codes_directory&quot;, включается синтезатор.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="s2">&quot;settings.json&quot;</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Файл настроек не найден!&quot;</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;settings.json&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">settings</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="s2">&quot;code_type&quot;</span> <span class="ow">in</span> <span class="n">settings</span><span class="p">:</span>
+        <span class="n">generate_images_and_annotations</span><span class="p">(</span><span class="n">settings</span><span class="p">[</span><span class="s2">&quot;code_type&quot;</span><span class="p">],</span> <span class="n">settings</span><span class="p">[</span><span class="s2">&quot;code_count&quot;</span><span class="p">],</span> <span class="n">settings</span><span class="p">[</span><span class="s2">&quot;data_type&quot;</span><span class="p">])</span>
+        <span class="k">return</span>
+
+    <span class="k">if</span> <span class="s2">&quot;codes_directory&quot;</span> <span class="ow">in</span> <span class="n">settings</span><span class="p">:</span>
+        <span class="n">barcode_path</span> <span class="o">=</span> <span class="n">settings</span><span class="p">[</span><span class="s2">&quot;codes_directory&quot;</span><span class="p">]</span>
+        <span class="n">current_image_dir</span> <span class="o">=</span> <span class="n">barcode_path</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">current_image_dir</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Директория с кодами &#39;</span><span class="si">{</span><span class="n">current_image_dir</span><span class="si">}</span><span class="s2">&#39; не найдена!&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="n">files</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">current_image_dir</span><span class="p">)</span>
+        <span class="n">image_files</span> <span class="o">=</span> <span class="p">[</span><span class="n">file</span> <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files</span> <span class="k">if</span> <span class="n">file</span><span class="o">.</span><span class="n">endswith</span><span class="p">((</span><span class="s2">&quot;.png&quot;</span><span class="p">,</span> <span class="s2">&quot;.jpg&quot;</span><span class="p">,</span> <span class="s2">&quot;.jpeg&quot;</span><span class="p">,</span> <span class="s2">&quot;.bmp&quot;</span><span class="p">))]</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">image_files</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Изображения для преобразования не найдены!&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="k">for</span> <span class="n">transform_type</span><span class="p">,</span> <span class="n">transform_params</span> <span class="ow">in</span> <span class="n">settings</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">transform_params</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">transform_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;enabled&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+                <span class="k">continue</span>
+
+            <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">image_files</span><span class="p">:</span>
+                <span class="n">file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">current_image_dir</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+
+                <span class="n">annotation</span> <span class="o">=</span> <span class="n">current_image_dir</span> <span class="o">+</span> <span class="s2">&quot;_annotation/&quot;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">filename</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;.json&quot;</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">annotation</span><span class="p">):</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Аннотация для </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2"> не найдена, пропуск...&quot;</span><span class="p">)</span>
+                    <span class="k">continue</span>
+
+                <span class="n">make_transformation</span><span class="p">(</span>
+                    <span class="n">file_path</span><span class="p">,</span>
+                    <span class="n">annotation</span><span class="p">,</span>
+                    <span class="n">barcode_path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+                    <span class="n">transform_type</span><span class="p">,</span>
+                    <span class="n">transform_params</span>
+                <span class="p">)</span></div>
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">main_window</span><span class="p">()</span>
+    <span class="n">process_settings_file</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">Barcode Generator</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">barcode_generator</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2024, Ilya Yakovenko.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.3.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

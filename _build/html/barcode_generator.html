@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>barcode_generator package &#8212; Barcode Generator 1.0.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=12dfc556" />
+    <script src="_static/documentation_options.js?v=8d563738"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="barcode_generator" href="modules.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="barcode-generator-package">
+<h1>barcode_generator package<a class="headerlink" href="#barcode-generator-package" title="Link to this heading">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
+</section>
+<section id="module-barcode_generator.frontend">
+<span id="barcode-generator-frontend-module"></span><h2>barcode_generator.frontend module<a class="headerlink" href="#module-barcode_generator.frontend" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="barcode_generator.frontend.choose_file">
+<span class="sig-prename descclassname"><span class="pre">barcode_generator.frontend.</span></span><span class="sig-name descname"><span class="pre">choose_file</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/barcode_generator/frontend.html#choose_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#barcode_generator.frontend.choose_file" title="Link to this definition">¶</a></dt>
+<dd><p>Открывает диалоговое окно для выбора файла.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Путь к выбранному файлу.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="barcode_generator.frontend.generate_and_transform_codes">
+<span class="sig-prename descclassname"><span class="pre">barcode_generator.frontend.</span></span><span class="sig-name descname"><span class="pre">generate_and_transform_codes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/barcode_generator/frontend.html#generate_and_transform_codes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#barcode_generator.frontend.generate_and_transform_codes" title="Link to this definition">¶</a></dt>
+<dd><p>Открывает графический интерфейс для генерации и преобразования новых кодов.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="barcode_generator.frontend.main_window">
+<span class="sig-prename descclassname"><span class="pre">barcode_generator.frontend.</span></span><span class="sig-name descname"><span class="pre">main_window</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/barcode_generator/frontend.html#main_window"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#barcode_generator.frontend.main_window" title="Link to this definition">¶</a></dt>
+<dd><p>Запускает главное окно приложения с выбором режима работы.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="barcode_generator.frontend.save_settings">
+<span class="sig-prename descclassname"><span class="pre">barcode_generator.frontend.</span></span><span class="sig-name descname"><span class="pre">save_settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">settings</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/barcode_generator/frontend.html#save_settings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#barcode_generator.frontend.save_settings" title="Link to this definition">¶</a></dt>
+<dd><p>Сохраняет настройки в JSON файл.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>settings</strong> – Словарь с настройками для сохранения.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>IOError</strong> – Если произошла ошибка записи файла.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="barcode_generator.frontend.select_directory">
+<span class="sig-prename descclassname"><span class="pre">barcode_generator.frontend.</span></span><span class="sig-name descname"><span class="pre">select_directory</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/barcode_generator/frontend.html#select_directory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#barcode_generator.frontend.select_directory" title="Link to this definition">¶</a></dt>
+<dd><p>Открывает диалоговое окно для выбора директории.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Путь к выбранной директории.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="barcode_generator.frontend.transform_existing_codes">
+<span class="sig-prename descclassname"><span class="pre">barcode_generator.frontend.</span></span><span class="sig-name descname"><span class="pre">transform_existing_codes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/barcode_generator/frontend.html#transform_existing_codes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#barcode_generator.frontend.transform_existing_codes" title="Link to this definition">¶</a></dt>
+<dd><p>Открывает графический интерфейс для настройки преобразований существующих кодов.</p>
+</dd></dl>
+
+</section>
+<section id="module-barcode_generator.generator">
+<span id="barcode-generator-generator-module"></span><h2>barcode_generator.generator module<a class="headerlink" href="#module-barcode_generator.generator" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="barcode_generator.generator.Generator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">barcode_generator.generator.</span></span><span class="sig-name descname"><span class="pre">Generator</span></span><a class="reference internal" href="_modules/barcode_generator/generator.html#Generator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#barcode_generator.generator.Generator" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Класс для генерации изображений кодов и разметки.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="barcode_generator.generator.Generator.Dumper">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Dumper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stream</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_style</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_flow_style</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">canonical</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_unicode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line_break</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">explicit_start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">explicit_end</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/barcode_generator/generator.html#Generator.Dumper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#barcode_generator.generator.Generator.Dumper" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">SafeDumper</span></code></p>
+<p>Расширенный дампер YAML для корректной работы с булевыми значениями.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="barcode_generator.generator.Generator.Dumper.represent_bool">
+<span class="sig-name descname"><span class="pre">represent_bool</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/barcode_generator/generator.html#Generator.Dumper.represent_bool"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#barcode_generator.generator.Generator.Dumper.represent_bool" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="barcode_generator.generator.Generator.Dumper.yaml_representers">
+<span class="sig-name descname"><span class="pre">yaml_representers</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{&lt;class</span> <span class="pre">'NoneType'&gt;:</span> <span class="pre">&lt;function</span> <span class="pre">SafeRepresenter.represent_none&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'bool'&gt;:</span> <span class="pre">&lt;function</span> <span class="pre">Generator.Dumper.represent_bool&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'bytes'&gt;:</span> <span class="pre">&lt;function</span> <span class="pre">SafeRepresenter.represent_binary&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'datetime.date'&gt;:</span> <span class="pre">&lt;function</span> <span class="pre">SafeRepresenter.represent_date&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'datetime.datetime'&gt;:</span> <span class="pre">&lt;function</span> <span class="pre">SafeRepresenter.represent_datetime&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'dict'&gt;:</span> <span class="pre">&lt;function</span> <span class="pre">SafeRepresenter.represent_dict&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'float'&gt;:</span> <span class="pre">&lt;function</span> <span class="pre">SafeRepresenter.represent_float&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'int'&gt;:</span> <span class="pre">&lt;function</span> <span class="pre">SafeRepresenter.represent_int&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'list'&gt;:</span> <span class="pre">&lt;function</span> <span class="pre">SafeRepresenter.represent_list&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'set'&gt;:</span> <span class="pre">&lt;function</span> <span class="pre">SafeRepresenter.represent_set&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'str'&gt;:</span> <span class="pre">&lt;function</span> <span class="pre">SafeRepresenter.represent_str&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'tuple'&gt;:</span> <span class="pre">&lt;function</span> <span class="pre">SafeRepresenter.represent_list&gt;,</span> <span class="pre">None:</span> <span class="pre">&lt;function</span> <span class="pre">SafeRepresenter.represent_undefined&gt;}</span></em><a class="headerlink" href="#barcode_generator.generator.Generator.Dumper.yaml_representers" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="barcode_generator.generator.Generator.KnowledgeBase">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">KnowledgeBase</span></span><a class="reference internal" href="_modules/barcode_generator/generator.html#Generator.KnowledgeBase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#barcode_generator.generator.Generator.KnowledgeBase" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>База знаний для работы с типами штрихкодов и их валидацией.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="barcode_generator.generator.Generator.KnowledgeBase.validate_barcode">
+<span class="sig-name descname"><span class="pre">validate_barcode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">barcode_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/barcode_generator/generator.html#Generator.KnowledgeBase.validate_barcode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#barcode_generator.generator.Generator.KnowledgeBase.validate_barcode" title="Link to this definition">¶</a></dt>
+<dd><p>Проверяет соответствие данных заданному типу штрихкода.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>barcode_type</strong> – Тип штрихкода.</p></li>
+<li><p><strong>data</strong> – Строка данных для валидации.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True, если данные валидны для указанного типа штрихкода.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="barcode_generator.generator.Generator.KnowledgeBase.validate_gs1">
+<span class="sig-name descname"><span class="pre">validate_gs1</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/barcode_generator/generator.html#Generator.KnowledgeBase.validate_gs1"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#barcode_generator.generator.Generator.KnowledgeBase.validate_gs1" title="Link to this definition">¶</a></dt>
+<dd><p>Проверяет валидность данных для типа штрихкода GS1-128.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> – Строка данных для валидации.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True, если данные соответствуют шаблону GS1-128.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="barcode_generator.generator.Generator.count_black_pixel_changes_height">
+<span class="sig-name descname"><span class="pre">count_black_pixel_changes_height</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/barcode_generator/generator.html#Generator.count_black_pixel_changes_height"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#barcode_generator.generator.Generator.count_black_pixel_changes_height" title="Link to this definition">¶</a></dt>
+<dd><p>Определяет изменения в количестве чёрных пикселей по высоте изображения.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>image</strong> – Изображение штрихкода (PIL.Image).</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Координата первой строки, где произошли изменения.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="barcode_generator.generator.Generator.count_black_pixel_changes_width">
+<span class="sig-name descname"><span class="pre">count_black_pixel_changes_width</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/barcode_generator/generator.html#Generator.count_black_pixel_changes_width"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#barcode_generator.generator.Generator.count_black_pixel_changes_width" title="Link to this definition">¶</a></dt>
+<dd><p>Определяет изменения в количестве чёрных пикселей по ширине изображения.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>image</strong> – Изображение штрихкода (PIL.Image).</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Координата первого столбца, где произошли изменения.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="barcode_generator.generator.Generator.format_options">
+<span class="sig-name descname"><span class="pre">format_options</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">options_str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/barcode_generator/generator.html#Generator.format_options"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#barcode_generator.generator.Generator.format_options" title="Link to this definition">¶</a></dt>
+<dd><p>Преобразует строку опций в словарь для записи в yaml.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>options_str</strong> – Строка опций</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Словарь с опциями.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="barcode_generator.generator.Generator.generate_annotations">
+<span class="sig-name descname"><span class="pre">generate_annotations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">barcode_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotation_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">barcode_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">template_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/barcode_generator/generator.html#Generator.generate_annotations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#barcode_generator.generator.Generator.generate_annotations" title="Link to this definition">¶</a></dt>
+<dd><p>Генерирует разметку для изображений штрихкодов.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>barcode_type</strong> – Тип штрихкода.</p></li>
+<li><p><strong>annotation_path</strong> – Путь для сохранения разметки.</p></li>
+<li><p><strong>barcode_path</strong> – Путь к директории с изображениями штрихкодов.</p></li>
+<li><p><strong>template_path</strong> – Путь к файлу шаблона аннотаций.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="barcode_generator.generator.Generator.generate_barcode_data">
+<span class="sig-name descname"><span class="pre">generate_barcode_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">barcode_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="reference internal" href="_modules/barcode_generator/generator.html#Generator.generate_barcode_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#barcode_generator.generator.Generator.generate_barcode_data" title="Link to this definition">¶</a></dt>
+<dd><p>Генерирует данные для штрихкодов указанного типа.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>barcode_type</strong> – Тип штрихкода.</p></li>
+<li><p><strong>count</strong> – Количество данных для генерации.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Список строк данных для штрихкодов.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="barcode_generator.generator.Generator.get_options">
+<span class="sig-name descname"><span class="pre">get_options</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">barcode_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/barcode_generator/generator.html#Generator.get_options"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#barcode_generator.generator.Generator.get_options" title="Link to this definition">¶</a></dt>
+<dd><p>Возвращает параметры, используемые для генерации штрихкода указанного типа.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>barcode_type</strong> – Тип штрихкода.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Строка с опциями для генерации.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-barcode_generator.main">
+<span id="barcode-generator-main-module"></span><h2>barcode_generator.main module<a class="headerlink" href="#module-barcode_generator.main" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="barcode_generator.main.generate_images_and_annotations">
+<span class="sig-prename descclassname"><span class="pre">barcode_generator.main.</span></span><span class="sig-name descname"><span class="pre">generate_images_and_annotations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">barcode_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">number</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/barcode_generator/main.html#generate_images_and_annotations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#barcode_generator.main.generate_images_and_annotations" title="Link to this definition">¶</a></dt>
+<dd><p>Основная функция для генерации изображений и разметки</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>barcode_type</strong> – Тип штрихкода</p></li>
+<li><p><strong>number</strong> – Количество генерируемых штрихкодов</p></li>
+<li><p><strong>data_type</strong> – Тип данных для генерации</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="barcode_generator.main.make_transformation">
+<span class="sig-prename descclassname"><span class="pre">barcode_generator.main.</span></span><span class="sig-name descname"><span class="pre">make_transformation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotation</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">barcode_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type_transform</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/barcode_generator/main.html#make_transformation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#barcode_generator.main.make_transformation" title="Link to this definition">¶</a></dt>
+<dd><p>Применяет заданное преобразование к изображению штрихкода и обновляет разметку.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>image</strong> – Путь к изображению штрихкода</p></li>
+<li><p><strong>annotation</strong> – Путь к файлу разметки для штрихкода</p></li>
+<li><p><strong>barcode_type</strong> – Тип штрихкода</p></li>
+<li><p><strong>type_transform</strong> – Тип преобразования</p></li>
+<li><p><strong>params</strong> – Параметры преобразования в виде словаря.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="barcode_generator.main.process_settings_file">
+<span class="sig-prename descclassname"><span class="pre">barcode_generator.main.</span></span><span class="sig-name descname"><span class="pre">process_settings_file</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/barcode_generator/main.html#process_settings_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#barcode_generator.main.process_settings_file" title="Link to this definition">¶</a></dt>
+<dd><p>Обрабатывает файл настроек и передает управление соответствующей функции (генератору или синтезатору).</p>
+<p>Если файл настроек содержит “code_type”, то включается генератор.
+Если в файле указана “codes_directory”, включается синтезатор.</p>
+</dd></dl>
+
+</section>
+<section id="module-barcode_generator.synthesizer">
+<span id="barcode-generator-synthesizer-module"></span><h2>barcode_generator.synthesizer module<a class="headerlink" href="#module-barcode_generator.synthesizer" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="barcode_generator.synthesizer.Synthesizer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">barcode_generator.synthesizer.</span></span><span class="sig-name descname"><span class="pre">Synthesizer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotation_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">barcode_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/barcode_generator/synthesizer.html#Synthesizer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#barcode_generator.synthesizer.Synthesizer" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Класс для выполнения различных преобразований над изображениями штрихкодов и разметкой.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="barcode_generator.synthesizer.Synthesizer.add_blur">
+<span class="sig-name descname"><span class="pre">add_blur</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">radius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/barcode_generator/synthesizer.html#Synthesizer.add_blur"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#barcode_generator.synthesizer.Synthesizer.add_blur" title="Link to this definition">¶</a></dt>
+<dd><p>Добавляет размытие изображению.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>radius</strong> – Радиус размытия.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Размытое изображение и новый файл разметки.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="barcode_generator.synthesizer.Synthesizer.add_glare">
+<span class="sig-name descname"><span class="pre">add_glare</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">intensity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/barcode_generator/synthesizer.html#Synthesizer.add_glare"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#barcode_generator.synthesizer.Synthesizer.add_glare" title="Link to this definition">¶</a></dt>
+<dd><p>Добавляет эффект блика на изображение.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>intensity</strong> – Интенсивность блика (от 0 до 1).</p></li>
+<li><p><strong>radius</strong> – Радиус блика.</p></li>
+<li><p><strong>position</strong> – Координаты центра блика (по умолчанию случайное).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Изображение с бликом и новый файл разметки.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="barcode_generator.synthesizer.Synthesizer.add_noise">
+<span class="sig-name descname"><span class="pre">add_noise</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">intensity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/barcode_generator/synthesizer.html#Synthesizer.add_noise"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#barcode_generator.synthesizer.Synthesizer.add_noise" title="Link to this definition">¶</a></dt>
+<dd><p>Добавляет шум к изображению.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>intensity</strong> – Интенсивность шума.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Изображение с шумом и новый файл разметки.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="barcode_generator.synthesizer.Synthesizer.add_texture">
+<span class="sig-name descname"><span class="pre">add_texture</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">texture_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/barcode_generator/synthesizer.html#Synthesizer.add_texture"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#barcode_generator.synthesizer.Synthesizer.add_texture" title="Link to this definition">¶</a></dt>
+<dd><p>Добавляет текстуру на изображение.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>texture_path</strong> – Путь к изображению текстуры.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Изображение с текстурой и новый файл разметки.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="barcode_generator.synthesizer.Synthesizer.adjust_brightness">
+<span class="sig-name descname"><span class="pre">adjust_brightness</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.3</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/barcode_generator/synthesizer.html#Synthesizer.adjust_brightness"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#barcode_generator.synthesizer.Synthesizer.adjust_brightness" title="Link to this definition">¶</a></dt>
+<dd><p>Регулирует яркость изображения.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>factor</strong> – Коэффициент изменения яркости.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Изображение с изменённой яркостью и новый файл разметки.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="barcode_generator.synthesizer.Synthesizer.adjust_contrast">
+<span class="sig-name descname"><span class="pre">adjust_contrast</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.3</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/barcode_generator/synthesizer.html#Synthesizer.adjust_contrast"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#barcode_generator.synthesizer.Synthesizer.adjust_contrast" title="Link to this definition">¶</a></dt>
+<dd><p>Регулирует контрастность изображения.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>factor</strong> – Коэффициент изменения контрастности.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Изображение с изменённым контрастом и новый файл разметки.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="barcode_generator.synthesizer.Synthesizer.adjust_saturation">
+<span class="sig-name descname"><span class="pre">adjust_saturation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.3</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/barcode_generator/synthesizer.html#Synthesizer.adjust_saturation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#barcode_generator.synthesizer.Synthesizer.adjust_saturation" title="Link to this definition">¶</a></dt>
+<dd><p>Регулирует насыщенность изображения.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>factor</strong> – Коэффициент изменения насыщенности.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Изображение с изменённой насыщенностью и новый файл разметки.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="barcode_generator.synthesizer.Synthesizer.change_perspective">
+<span class="sig-name descname"><span class="pre">change_perspective</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">src_points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dst_points</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/barcode_generator/synthesizer.html#Synthesizer.change_perspective"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#barcode_generator.synthesizer.Synthesizer.change_perspective" title="Link to this definition">¶</a></dt>
+<dd><p>Осуществляет проективное искажение.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>src_points</strong> – Исходные вершины изображения.</p></li>
+<li><p><strong>dst_points</strong> – Целевые точки для преобразования.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Изображение с изменённой перспективой и новый файл разметки.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="barcode_generator.synthesizer.Synthesizer.create_new_json">
+<span class="sig-name descname"><span class="pre">create_new_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_image_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/barcode_generator/synthesizer.html#Synthesizer.create_new_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#barcode_generator.synthesizer.Synthesizer.create_new_json" title="Link to this definition">¶</a></dt>
+<dd><p>Создаёт файл разметки для преобразованного изображения.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>coords</strong> – Координаты области кода на изображении.</p></li>
+<li><p><strong>new_image_name</strong> – Имя нового изображения.</p></li>
+<li><p><strong>output_filename</strong> – Имя файла для сохранения разметки.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Имя выходного файла разметки.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="barcode_generator.synthesizer.Synthesizer.find_perspective_coeffs">
+<span class="sig-name descname"><span class="pre">find_perspective_coeffs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">src_points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dst_points</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/barcode_generator/synthesizer.html#Synthesizer.find_perspective_coeffs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#barcode_generator.synthesizer.Synthesizer.find_perspective_coeffs" title="Link to this definition">¶</a></dt>
+<dd><p>Вычисляет коэффициенты для перспективного преобразования.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>src_points</strong> – Исходные точки.</p></li>
+<li><p><strong>dst_points</strong> – Целевые точки.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Список коэффициентов для преобразования.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="barcode_generator.synthesizer.Synthesizer.overlay_barcode_on_background">
+<span class="sig-name descname"><span class="pre">overlay_barcode_on_background</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">background_image_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_off</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_off</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/barcode_generator/synthesizer.html#Synthesizer.overlay_barcode_on_background"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#barcode_generator.synthesizer.Synthesizer.overlay_barcode_on_background" title="Link to this definition">¶</a></dt>
+<dd><p>Накладывает изображение штрихкода на фон.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>background_image_path</strong> – Путь к изображению фона.</p></li>
+<li><p><strong>x_off</strong> – Смещение по оси X.</p></li>
+<li><p><strong>y_off</strong> – Смещение по оси Y.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Изображение с наложением и новый файл разметки.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="barcode_generator.synthesizer.Synthesizer.rotate">
+<span class="sig-name descname"><span class="pre">rotate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">angle</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/barcode_generator/synthesizer.html#Synthesizer.rotate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#barcode_generator.synthesizer.Synthesizer.rotate" title="Link to this definition">¶</a></dt>
+<dd><p>Поворачивает изображение на заданный угол.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>angle</strong> – Угол поворота в градусах.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Повернутое изображение и новый файл разметки.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="barcode_generator.synthesizer.Synthesizer.zoom">
+<span class="sig-name descname"><span class="pre">zoom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">degree</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/barcode_generator/synthesizer.html#Synthesizer.zoom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#barcode_generator.synthesizer.Synthesizer.zoom" title="Link to this definition">¶</a></dt>
+<dd><p>Изменяет масштаб изображения.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>degree</strong> – Степень масштабирования.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Масштабированное изображение и новый файл разметки.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="barcode_generator.synthesizer.find_line">
+<span class="sig-prename descclassname"><span class="pre">barcode_generator.synthesizer.</span></span><span class="sig-name descname"><span class="pre">find_line</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/barcode_generator/synthesizer.html#find_line"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#barcode_generator.synthesizer.find_line" title="Link to this definition">¶</a></dt>
+<dd><p>Вычисляет параметры прямой линии (угловой коэффициент и смещение).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x1</strong> – Координата x первой точки.</p></li>
+<li><p><strong>y1</strong> – Координата y первой точки.</p></li>
+<li><p><strong>x2</strong> – Координата x второй точки.</p></li>
+<li><p><strong>y2</strong> – Координата y второй точки.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Угловой коэффициент (m) и смещение (b).</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-barcode_generator">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-barcode_generator" title="Link to this heading">¶</a></h2>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Barcode Generator</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">barcode_generator</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">barcode_generator package</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="modules.html">barcode_generator</a><ul>
+      <li>Previous: <a href="modules.html" title="previous chapter">barcode_generator</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2024, Ilya Yakovenko.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.3.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+      |
+      <a href="_sources/barcode_generator.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

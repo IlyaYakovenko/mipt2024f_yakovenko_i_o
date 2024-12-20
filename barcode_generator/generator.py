@@ -8,9 +8,18 @@ import string
 
 
 class Generator:
+    """
+        Класс для генерации изображений кодов и разметки.
+    """
 
     class KnowledgeBase:
+        """
+            База знаний для работы с типами штрихкодов и их валидацией.
+        """
         def __init__(self):
+            """
+                Инициализирует базу знаний с поддерживаемыми типами штрихкодов и их опциями.
+            """
             self.barcode_types = {"code39" : "code_39", "ean8" : "ean_8", "ean13" : "ean_13",
                          "gs1-128" : "ean_128", "interleaved2of5" :"interleaved_2_of_5",
                          "upca" : "upc_a", "upce" : "upc_e", "azteccode" : "aztec_code",
@@ -20,6 +29,13 @@ class Generator:
             self.options = {"1d" : "includetext guardwhitespace", "2d" : " "}
 
         def validate_barcode(self, barcode_type: str, data: str) -> bool:
+            """
+                Проверяет соответствие данных заданному типу штрихкода.
+
+                :param barcode_type: Тип штрихкода.
+                :param data: Строка данных для валидации.
+                :return: True, если данные валидны для указанного типа штрихкода.
+            """
             patterns = {
                 "code39": r'^[0-9A-Z\-\.\$\+\% ]+$',
                 "ean8": r'^\d{7,8}$',
@@ -44,11 +60,23 @@ class Generator:
                 raise ValueError(f"Unknown barcode type: {barcode_type}")
 
         def validate_gs1(self, data: str) -> bool:
+            """
+                Проверяет валидность данных для типа штрихкода GS1-128.
+
+                :param data: Строка данных для валидации.
+                :return: True, если данные соответствуют шаблону GS1-128.
+            """
             gs1_pattern = r'^\(\d{2}\)[\x00-\xFF]+$'
             return bool(re.match(gs1_pattern, data))
 
 
     def count_black_pixel_changes_height(self, image):
+        """
+            Определяет изменения в количестве чёрных пикселей по высоте изображения.
+
+            :param image: Изображение штрихкода (PIL.Image).
+            :return: Координата первой строки, где произошли изменения.
+        """
         image.convert("1")
         width, height = image.size
 
@@ -66,6 +94,12 @@ class Generator:
         return change_lines[1]
 
     def count_black_pixel_changes_width(self, image):
+        """
+           Определяет изменения в количестве чёрных пикселей по ширине изображения.
+
+           :param image: Изображение штрихкода (PIL.Image).
+           :return: Координата первого столбца, где произошли изменения.
+        """
         image.convert("1")
         width, height = image.size
 
@@ -84,6 +118,12 @@ class Generator:
 
 
     def get_options(self, barcode_type):
+        """
+            Возвращает параметры, используемые для генерации штрихкода указанного типа.
+
+            :param barcode_type: Тип штрихкода.
+            :return: Строка с опциями для генерации.
+        """
         kb = self.KnowledgeBase()
         if barcode_type in ["code39", "ean8", "ean13", "gs1-128", "interleaved2of5", "upca", "upce"]:
             return kb.options["1d"]
@@ -91,6 +131,12 @@ class Generator:
 
 
     def format_options(self, options_str):
+        """
+           Преобразует строку опций в словарь для записи в yaml.
+
+           :param options_str: Строка опций
+           :return: Словарь с опциями.
+        """
         options_dict = {}
         for option in options_str.split(' '):
             if option != '':
@@ -104,6 +150,9 @@ class Generator:
 
 
     class Dumper(yaml.SafeDumper):
+        """
+            Расширенный дампер YAML для корректной работы с булевыми значениями.
+        """
         def represent_bool(self, data):
             if data is True:
                 return self.represent_scalar('tag:yaml.org,2002:bool', 'True')
@@ -116,6 +165,14 @@ class Generator:
 
 
     def generate_annotations(self, barcode_type, annotation_path, barcode_path, template_path):
+        """
+            Генерирует разметку для изображений штрихкодов.
+
+            :param barcode_type: Тип штрихкода.
+            :param annotation_path: Путь для сохранения разметки.
+            :param barcode_path: Путь к директории с изображениями штрихкодов.
+            :param template_path: Путь к файлу шаблона аннотаций.
+        """
         if not os.path.exists(annotation_path):
             os.makedirs(annotation_path)
 
@@ -169,6 +226,13 @@ class Generator:
 
 
     def generate_barcode_data(self, barcode_type: str, count: int) -> list:
+        """
+            Генерирует данные для штрихкодов указанного типа.
+
+            :param barcode_type: Тип штрихкода.
+            :param count: Количество данных для генерации.
+            :return: Список строк данных для штрихкодов.
+        """
         generated_data = []
 
         for _ in range(count):

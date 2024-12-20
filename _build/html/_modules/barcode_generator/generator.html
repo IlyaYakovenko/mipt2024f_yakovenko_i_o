@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>barcode_generator.generator &#8212; Barcode Generator 1.0.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=12dfc556" />
+    <script src="../../_static/documentation_options.js?v=8d563738"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for barcode_generator.generator</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">yaml</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">string</span>
+
+
+<div class="viewcode-block" id="Generator">
+<a class="viewcode-back" href="../../barcode_generator.html#barcode_generator.generator.Generator">[docs]</a>
+<span class="k">class</span> <span class="nc">Generator</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Класс для генерации изображений кодов и разметки.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Generator.KnowledgeBase">
+<a class="viewcode-back" href="../../barcode_generator.html#barcode_generator.generator.Generator.KnowledgeBase">[docs]</a>
+    <span class="k">class</span> <span class="nc">KnowledgeBase</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            База знаний для работы с типами штрихкодов и их валидацией.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">                Инициализирует базу знаний с поддерживаемыми типами штрихкодов и их опциями.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">barcode_types</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;code39&quot;</span> <span class="p">:</span> <span class="s2">&quot;code_39&quot;</span><span class="p">,</span> <span class="s2">&quot;ean8&quot;</span> <span class="p">:</span> <span class="s2">&quot;ean_8&quot;</span><span class="p">,</span> <span class="s2">&quot;ean13&quot;</span> <span class="p">:</span> <span class="s2">&quot;ean_13&quot;</span><span class="p">,</span>
+                         <span class="s2">&quot;gs1-128&quot;</span> <span class="p">:</span> <span class="s2">&quot;ean_128&quot;</span><span class="p">,</span> <span class="s2">&quot;interleaved2of5&quot;</span> <span class="p">:</span><span class="s2">&quot;interleaved_2_of_5&quot;</span><span class="p">,</span>
+                         <span class="s2">&quot;upca&quot;</span> <span class="p">:</span> <span class="s2">&quot;upc_a&quot;</span><span class="p">,</span> <span class="s2">&quot;upce&quot;</span> <span class="p">:</span> <span class="s2">&quot;upc_e&quot;</span><span class="p">,</span> <span class="s2">&quot;azteccode&quot;</span> <span class="p">:</span> <span class="s2">&quot;aztec_code&quot;</span><span class="p">,</span>
+                         <span class="s2">&quot;datamatrix&quot;</span> <span class="p">:</span> <span class="s2">&quot;data_matrix&quot;</span><span class="p">,</span> <span class="s2">&quot;maxicode&quot;</span> <span class="p">:</span> <span class="s2">&quot;maxi_code&quot;</span><span class="p">,</span>
+                         <span class="s2">&quot;pdf417&quot;</span> <span class="p">:</span> <span class="s2">&quot;pdf_417&quot;</span><span class="p">,</span> <span class="s2">&quot;qrcode&quot;</span> <span class="p">:</span> <span class="s2">&quot;qr&quot;</span><span class="p">}</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;1d&quot;</span> <span class="p">:</span> <span class="s2">&quot;includetext guardwhitespace&quot;</span><span class="p">,</span> <span class="s2">&quot;2d&quot;</span> <span class="p">:</span> <span class="s2">&quot; &quot;</span><span class="p">}</span>
+
+<div class="viewcode-block" id="Generator.KnowledgeBase.validate_barcode">
+<a class="viewcode-back" href="../../barcode_generator.html#barcode_generator.generator.Generator.KnowledgeBase.validate_barcode">[docs]</a>
+        <span class="k">def</span> <span class="nf">validate_barcode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">barcode_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">                Проверяет соответствие данных заданному типу штрихкода.</span>
+
+<span class="sd">                :param barcode_type: Тип штрихкода.</span>
+<span class="sd">                :param data: Строка данных для валидации.</span>
+<span class="sd">                :return: True, если данные валидны для указанного типа штрихкода.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="n">patterns</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;code39&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^[0-9A-Z\-\.\$\+\% ]+$&#39;</span><span class="p">,</span>
+                <span class="s2">&quot;ean8&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^\d{7,8}$&#39;</span><span class="p">,</span>
+                <span class="s2">&quot;ean13&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^\d{12,13}$&#39;</span><span class="p">,</span>
+                <span class="s2">&quot;upca&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^\d{11,12}$&#39;</span><span class="p">,</span>
+                <span class="s2">&quot;upce&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^\d{7,8}$&#39;</span><span class="p">,</span>
+                <span class="s2">&quot;interleaved2of5&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^\d+$&#39;</span><span class="p">,</span>
+                <span class="s2">&quot;azteccode&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^[\x00-\xFF]+$&#39;</span><span class="p">,</span>
+                <span class="s2">&quot;qrcode&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^[\x00-\xFF]+$&#39;</span><span class="p">,</span>
+                <span class="s2">&quot;datamatrix&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^[\x00-\xFF]+$&#39;</span><span class="p">,</span>
+                <span class="s2">&quot;pdf417&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^[\x00-\xFF]+$&#39;</span><span class="p">,</span>
+                <span class="s2">&quot;maxicode&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^[\x00-\xFF]+$&#39;</span><span class="p">,</span>
+            <span class="p">}</span>
+
+            <span class="k">if</span> <span class="n">barcode_type</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;gs1-128&quot;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_gs1</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+            <span class="n">pattern</span> <span class="o">=</span> <span class="n">patterns</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">barcode_type</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+            <span class="k">if</span> <span class="n">pattern</span><span class="p">:</span>
+                <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">data</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown barcode type: </span><span class="si">{</span><span class="n">barcode_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Generator.KnowledgeBase.validate_gs1">
+<a class="viewcode-back" href="../../barcode_generator.html#barcode_generator.generator.Generator.KnowledgeBase.validate_gs1">[docs]</a>
+        <span class="k">def</span> <span class="nf">validate_gs1</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">                Проверяет валидность данных для типа штрихкода GS1-128.</span>
+
+<span class="sd">                :param data: Строка данных для валидации.</span>
+<span class="sd">                :return: True, если данные соответствуют шаблону GS1-128.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="n">gs1_pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;^\(\d</span><span class="si">{2}</span><span class="s1">\)[\x00-\xFF]+$&#39;</span>
+            <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">gs1_pattern</span><span class="p">,</span> <span class="n">data</span><span class="p">))</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Generator.count_black_pixel_changes_height">
+<a class="viewcode-back" href="../../barcode_generator.html#barcode_generator.generator.Generator.count_black_pixel_changes_height">[docs]</a>
+    <span class="k">def</span> <span class="nf">count_black_pixel_changes_height</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Определяет изменения в количестве чёрных пикселей по высоте изображения.</span>
+
+<span class="sd">            :param image: Изображение штрихкода (PIL.Image).</span>
+<span class="sd">            :return: Координата первой строки, где произошли изменения.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">image</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">)</span>
+        <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">size</span>
+
+        <span class="n">previous_black_count</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">change_lines</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">height</span><span class="p">):</span>
+            <span class="n">black_count</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">width</span><span class="p">)</span> <span class="k">if</span> <span class="n">image</span><span class="o">.</span><span class="n">getpixel</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">previous_black_count</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">black_count</span> <span class="o">!=</span> <span class="n">previous_black_count</span><span class="p">:</span>
+                <span class="n">change_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+
+            <span class="n">previous_black_count</span> <span class="o">=</span> <span class="n">black_count</span>
+
+        <span class="k">return</span> <span class="n">change_lines</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="Generator.count_black_pixel_changes_width">
+<a class="viewcode-back" href="../../barcode_generator.html#barcode_generator.generator.Generator.count_black_pixel_changes_width">[docs]</a>
+    <span class="k">def</span> <span class="nf">count_black_pixel_changes_width</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">           Определяет изменения в количестве чёрных пикселей по ширине изображения.</span>
+
+<span class="sd">           :param image: Изображение штрихкода (PIL.Image).</span>
+<span class="sd">           :return: Координата первого столбца, где произошли изменения.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">image</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">)</span>
+        <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">size</span>
+
+        <span class="n">previous_black_count</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">change_lines</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">width</span><span class="p">):</span>
+            <span class="n">black_count</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">height</span><span class="p">)</span> <span class="k">if</span> <span class="n">image</span><span class="o">.</span><span class="n">getpixel</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">previous_black_count</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">black_count</span> <span class="o">&gt;=</span> <span class="n">height</span> <span class="o">*</span> <span class="mf">0.7</span><span class="p">:</span>
+                <span class="n">change_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+            <span class="n">previous_black_count</span> <span class="o">=</span> <span class="n">black_count</span>
+
+        <span class="k">return</span> <span class="n">change_lines</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="Generator.get_options">
+<a class="viewcode-back" href="../../barcode_generator.html#barcode_generator.generator.Generator.get_options">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_options</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">barcode_type</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Возвращает параметры, используемые для генерации штрихкода указанного типа.</span>
+
+<span class="sd">            :param barcode_type: Тип штрихкода.</span>
+<span class="sd">            :return: Строка с опциями для генерации.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">kb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">KnowledgeBase</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">barcode_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;code39&quot;</span><span class="p">,</span> <span class="s2">&quot;ean8&quot;</span><span class="p">,</span> <span class="s2">&quot;ean13&quot;</span><span class="p">,</span> <span class="s2">&quot;gs1-128&quot;</span><span class="p">,</span> <span class="s2">&quot;interleaved2of5&quot;</span><span class="p">,</span> <span class="s2">&quot;upca&quot;</span><span class="p">,</span> <span class="s2">&quot;upce&quot;</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="n">kb</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s2">&quot;1d&quot;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">kb</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s2">&quot;2d&quot;</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="Generator.format_options">
+<a class="viewcode-back" href="../../barcode_generator.html#barcode_generator.generator.Generator.format_options">[docs]</a>
+    <span class="k">def</span> <span class="nf">format_options</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">options_str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">           Преобразует строку опций в словарь для записи в yaml.</span>
+
+<span class="sd">           :param options_str: Строка опций</span>
+<span class="sd">           :return: Словарь с опциями.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">options_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">option</span> <span class="ow">in</span> <span class="n">options_str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">option</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="s1">&#39;=&#39;</span> <span class="ow">in</span> <span class="n">option</span><span class="p">:</span>
+                    <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="n">option</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;=&#39;</span><span class="p">)</span>
+                    <span class="n">options_dict</span><span class="p">[</span><span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">options_dict</span><span class="p">[</span><span class="n">option</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="n">options_dict</span></div>
+
+
+
+
+<div class="viewcode-block" id="Generator.Dumper">
+<a class="viewcode-back" href="../../barcode_generator.html#barcode_generator.generator.Generator.Dumper">[docs]</a>
+    <span class="k">class</span> <span class="nc">Dumper</span><span class="p">(</span><span class="n">yaml</span><span class="o">.</span><span class="n">SafeDumper</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Расширенный дампер YAML для корректной работы с булевыми значениями.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Generator.Dumper.represent_bool">
+<a class="viewcode-back" href="../../barcode_generator.html#barcode_generator.generator.Generator.Dumper.represent_bool">[docs]</a>
+        <span class="k">def</span> <span class="nf">represent_bool</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">represent_scalar</span><span class="p">(</span><span class="s1">&#39;tag:yaml.org,2002:bool&#39;</span><span class="p">,</span> <span class="s1">&#39;True&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">represent_scalar</span><span class="p">(</span><span class="s1">&#39;tag:yaml.org,2002:bool&#39;</span><span class="p">,</span> <span class="s1">&#39;False&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">represent_bool</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
+</div>
+
+
+    <span class="n">Dumper</span><span class="o">.</span><span class="n">add_representer</span><span class="p">(</span><span class="nb">bool</span><span class="p">,</span> <span class="n">Dumper</span><span class="o">.</span><span class="n">represent_bool</span><span class="p">)</span>
+
+
+
+<div class="viewcode-block" id="Generator.generate_annotations">
+<a class="viewcode-back" href="../../barcode_generator.html#barcode_generator.generator.Generator.generate_annotations">[docs]</a>
+    <span class="k">def</span> <span class="nf">generate_annotations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">barcode_type</span><span class="p">,</span> <span class="n">annotation_path</span><span class="p">,</span> <span class="n">barcode_path</span><span class="p">,</span> <span class="n">template_path</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Генерирует разметку для изображений штрихкодов.</span>
+
+<span class="sd">            :param barcode_type: Тип штрихкода.</span>
+<span class="sd">            :param annotation_path: Путь для сохранения разметки.</span>
+<span class="sd">            :param barcode_path: Путь к директории с изображениями штрихкодов.</span>
+<span class="sd">            :param template_path: Путь к файлу шаблона аннотаций.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">annotation_path</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">annotation_path</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">barcode_path</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">filename</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;.pdf&quot;</span><span class="p">:</span>
+                <span class="n">file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">barcode_path</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+                <span class="n">file_size</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+                <span class="n">image</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+                <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">size</span>
+                <span class="n">lower_bound</span> <span class="o">=</span> <span class="n">height</span>
+                <span class="n">left_bound</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">right_bound</span> <span class="o">=</span> <span class="n">width</span>
+                <span class="k">if</span> <span class="n">barcode_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;ean_8&quot;</span><span class="p">,</span> <span class="s2">&quot;ean_13&quot;</span><span class="p">,</span> <span class="s2">&quot;upc_a&quot;</span><span class="p">,</span> <span class="s2">&quot;upc_e&quot;</span><span class="p">]:</span>
+                    <span class="n">left_bound</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">count_black_pixel_changes_width</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+                    <span class="n">right_bound</span> <span class="o">=</span> <span class="n">width</span> <span class="o">-</span> <span class="n">left_bound</span>
+                <span class="k">if</span> <span class="n">barcode_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;code_39&quot;</span><span class="p">,</span> <span class="s2">&quot;ean_8&quot;</span><span class="p">,</span> <span class="s2">&quot;ean_13&quot;</span><span class="p">,</span> <span class="s2">&quot;ean_128&quot;</span><span class="p">,</span> <span class="s2">&quot;interleaved_2_of_5&quot;</span><span class="p">,</span> <span class="s2">&quot;upc_a&quot;</span><span class="p">,</span> <span class="s2">&quot;upc_e&quot;</span><span class="p">]:</span>
+                    <span class="n">lower_bound</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">count_black_pixel_changes_height</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">template_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">template_file</span><span class="p">:</span>
+                    <span class="n">json_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">template_file</span><span class="p">)</span>
+
+                <span class="n">json_data</span><span class="p">[</span><span class="s2">&quot;_via_settings&quot;</span><span class="p">][</span><span class="s2">&quot;project&quot;</span><span class="p">][</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">filename</span>
+                <span class="n">file_key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">filename</span><span class="si">}{</span><span class="n">file_size</span><span class="si">}</span><span class="s2">&quot;</span>
+
+                <span class="n">json_data</span><span class="p">[</span><span class="s2">&quot;_via_img_metadata&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="n">file_key</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s2">&quot;filename&quot;</span><span class="p">:</span> <span class="n">filename</span><span class="p">,</span>
+                        <span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="n">file_size</span><span class="p">,</span>
+                        <span class="s2">&quot;regions&quot;</span><span class="p">:</span> <span class="p">[],</span>
+                    <span class="p">}</span>
+                <span class="p">}</span>
+
+                <span class="n">json_data</span><span class="p">[</span><span class="s2">&quot;_via_img_metadata&quot;</span><span class="p">][</span><span class="n">file_key</span><span class="p">][</span><span class="s2">&quot;regions&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                    <span class="s2">&quot;shape_attributes&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;polyline&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;all_points_x&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">left_bound</span><span class="p">,</span> <span class="n">right_bound</span><span class="p">,</span> <span class="n">right_bound</span><span class="p">,</span> <span class="n">left_bound</span><span class="p">,</span> <span class="n">left_bound</span><span class="p">],</span>
+                        <span class="s2">&quot;all_points_y&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">lower_bound</span><span class="p">,</span> <span class="n">lower_bound</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">lower_bound</span><span class="p">]</span>
+                    <span class="p">},</span>
+                    <span class="s2">&quot;region_attributes&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">barcode_type</span>
+                    <span class="p">}</span>
+                <span class="p">})</span>
+                <span class="n">json_data</span><span class="p">[</span><span class="s2">&quot;_via_img_metadata&quot;</span><span class="p">][</span><span class="n">file_key</span><span class="p">][</span><span class="s2">&quot;file_attributes&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="n">json_data</span><span class="p">[</span><span class="s2">&quot;_via_attributes&quot;</span><span class="p">][</span><span class="s2">&quot;region&quot;</span><span class="p">][</span><span class="s2">&quot;type&quot;</span><span class="p">][</span><span class="s2">&quot;options&quot;</span><span class="p">][</span><span class="n">barcode_type</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+                <span class="n">json_data</span><span class="p">[</span><span class="s2">&quot;_via_image_id_list&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">file_key</span><span class="p">]</span>
+
+                <span class="n">output_filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">filename</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;.json&quot;</span>
+                <span class="n">output_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">annotation_path</span><span class="p">,</span> <span class="n">output_filename</span><span class="p">)</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">output_file</span><span class="p">:</span>
+                    <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">json_data</span><span class="p">,</span> <span class="n">output_file</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="Generator.generate_barcode_data">
+<a class="viewcode-back" href="../../barcode_generator.html#barcode_generator.generator.Generator.generate_barcode_data">[docs]</a>
+    <span class="k">def</span> <span class="nf">generate_barcode_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">barcode_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">count</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Генерирует данные для штрихкодов указанного типа.</span>
+
+<span class="sd">            :param barcode_type: Тип штрихкода.</span>
+<span class="sd">            :param count: Количество данных для генерации.</span>
+<span class="sd">            :return: Список строк данных для штрихкодов.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">generated_data</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">count</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">barcode_type</span> <span class="o">==</span> <span class="s2">&quot;code39&quot;</span><span class="p">:</span>
+                <span class="n">chars</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">digits</span> <span class="o">+</span> <span class="n">string</span><span class="o">.</span><span class="n">ascii_uppercase</span> <span class="o">+</span> <span class="s2">&quot;-.$+% &quot;</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">chars</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">)))</span>
+
+            <span class="k">elif</span> <span class="n">barcode_type</span> <span class="o">==</span> <span class="s2">&quot;ean8&quot;</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">string</span><span class="o">.</span><span class="n">digits</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">7</span><span class="p">))</span>
+
+            <span class="k">elif</span> <span class="n">barcode_type</span> <span class="o">==</span> <span class="s2">&quot;ean13&quot;</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">string</span><span class="o">.</span><span class="n">digits</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">12</span><span class="p">))</span>
+
+            <span class="k">elif</span> <span class="n">barcode_type</span> <span class="o">==</span> <span class="s2">&quot;upca&quot;</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">string</span><span class="o">.</span><span class="n">digits</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">11</span><span class="p">))</span>
+
+            <span class="k">elif</span> <span class="n">barcode_type</span> <span class="o">==</span> <span class="s2">&quot;upce&quot;</span><span class="p">:</span>
+                <span class="n">num_sys</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">num_sys</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">string</span><span class="o">.</span><span class="n">digits</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">))</span>
+
+            <span class="k">elif</span> <span class="n">barcode_type</span> <span class="o">==</span> <span class="s2">&quot;gs1-128&quot;</span><span class="p">:</span>
+                <span class="n">ai_code</span> <span class="o">=</span> <span class="s2">&quot;(01)&quot;</span>
+                <span class="n">gtin_length</span> <span class="o">=</span> <span class="mi">13</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">ai_code</span> <span class="o">+</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">string</span><span class="o">.</span><span class="n">digits</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">gtin_length</span><span class="p">))</span>
+                <span class="n">sums</span> <span class="o">=</span> <span class="mi">3</span> <span class="o">*</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="mi">2</span><span class="p">))</span> <span class="o">+</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="mi">2</span><span class="p">))</span>
+                <span class="n">control_digit</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">sums</span> <span class="o">%</span> <span class="mi">10</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">10</span> <span class="o">-</span> <span class="n">sums</span> <span class="o">%</span> <span class="mi">10</span>
+                <span class="n">data</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="n">control_digit</span><span class="p">)</span>
+
+            <span class="k">elif</span> <span class="n">barcode_type</span> <span class="o">==</span> <span class="s2">&quot;interleaved2of5&quot;</span><span class="p">:</span>
+                <span class="n">length</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">string</span><span class="o">.</span><span class="n">digits</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">length</span><span class="p">))</span>
+
+            <span class="k">elif</span> <span class="n">barcode_type</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;azteccode&quot;</span><span class="p">,</span> <span class="s2">&quot;qrcode&quot;</span><span class="p">,</span> <span class="s2">&quot;datamatrix&quot;</span><span class="p">,</span> <span class="s2">&quot;pdf417&quot;</span><span class="p">}:</span>
+                <span class="n">length</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+                <span class="n">characters</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">ascii_letters</span> <span class="o">+</span> <span class="n">string</span><span class="o">.</span><span class="n">digits</span> <span class="o">+</span> <span class="n">string</span><span class="o">.</span><span class="n">punctuation</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">choices</span><span class="p">(</span><span class="n">characters</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">length</span><span class="p">))</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">barcode_type</span> <span class="o">==</span> <span class="s2">&quot;maxicode&quot;</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">string</span><span class="o">.</span><span class="n">digits</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">90</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Неизвестный тип штрихкода: </span><span class="si">{</span><span class="n">barcode_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="n">generated_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">generated_data</span></div>
+</div>
+
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">Barcode Generator</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">barcode_generator</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2024, Ilya Yakovenko.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.3.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

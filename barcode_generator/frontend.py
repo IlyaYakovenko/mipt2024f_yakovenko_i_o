@@ -5,27 +5,50 @@ import json
 
 
 def save_settings(settings):
+    """
+        Сохраняет настройки в JSON файл.
+
+        :param settings: Словарь с настройками для сохранения.
+        :raises IOError: Если произошла ошибка записи файла.
+    """
     with open("settings.json", "w") as f:
         json.dump(settings, f, indent=4)
     messagebox.showinfo("Сохранение", "Настройки успешно сохранены!")
 
 
 def choose_file():
+    """
+        Открывает диалоговое окно для выбора файла.
+
+        :return: Путь к выбранному файлу.
+    """
     file_path = filedialog.askopenfilename(title="Выберите файл текстуры")
     return file_path
 
 
 def select_directory():
+    """
+        Открывает диалоговое окно для выбора директории.
+
+        :return: Путь к выбранной директории.
+    """
     return filedialog.askdirectory(title="Выберите директорию")
 
 
 def transform_existing_codes():
+    """
+        Открывает графический интерфейс для настройки преобразований существующих кодов.
+
+    """
     root = tk.Tk()
     root.title("Преобразовать готовые коды")
 
     codes_directory = tk.StringVar()
 
     def choose_codes_directory():
+        """
+            Открывает диалоговое окно для выбора директории с кодами.
+        """
         directory = select_directory()
         if directory:
             codes_directory.set(directory)
@@ -48,6 +71,10 @@ def transform_existing_codes():
     settings = {}
 
     def save_transform_settings():
+        """
+            Сохраняет настройки преобразования в JSON файл.
+
+        """
         settings["codes_directory"] = codes_directory.get()
         settings["rotate"] = {"enabled": var_rotate.get(), "angle": entry_angle.get()}
         settings["noise"] = {"enabled": var_noise.get(), "intensity": entry_noise.get()}
@@ -203,6 +230,10 @@ def transform_existing_codes():
 
 
 def generate_and_transform_codes():
+    """
+        Открывает графический интерфейс для генерации и преобразования новых кодов.
+
+    """
     root = tk.Tk()
     root.title("Сгенерировать и преобразовать коды")
     code_type = tk.StringVar()
@@ -212,6 +243,9 @@ def generate_and_transform_codes():
     settings = {}
 
     def save_generate_settings():
+        """
+               Сохраняет настройки генерации в JSON файл.
+        """
         settings["code_type"] = code_type.get()
         settings["code_count"] = code_count.get()
         settings["data_type"] = data_type.get()
@@ -245,14 +279,23 @@ def generate_and_transform_codes():
 
 
 def main_window():
+    """
+       Запускает главное окно приложения с выбором режима работы.
+    """
     root = tk.Tk()
     root.title("Выберите опцию")
 
     def open_transform_existing():
+        """
+            Открывает окно для преобразования существующих кодов.
+        """
         root.destroy()
         transform_existing_codes()
 
     def open_generate_and_transform():
+        """
+            Открывает окно для генерации и преобразования новых кодов.
+        """
         root.destroy()
         generate_and_transform_codes()
 

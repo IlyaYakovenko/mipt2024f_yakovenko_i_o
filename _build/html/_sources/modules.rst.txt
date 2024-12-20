@@ -1,0 +1,7 @@
+barcode_generator
+=================
+
+.. toctree::
+   :maxdepth: 4
+
+   barcode_generator
